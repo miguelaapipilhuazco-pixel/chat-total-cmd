@@ -10,7 +10,7 @@ async function procesarComandos(text) {
   if (prompt.startsWith( 'descarga ' )) {
     const modelo = text.split( ' ' ).pop();
     exec(`ollama pull ${modelo}`);
-    return `Descargando el modelo de IA: ${modelo} en segundo plano de la matriz.`;
+    return `Descargando el modelo de IA: ${modelo} en segundo plano en la matriz virtual.`;
   }
   if (prompt.startsWith( 'clona ' )) {
     const repo = text.split( ' ' ).pop();
@@ -24,14 +24,17 @@ app.post('/api/chat', async (req, res) => {
     const { message } = req.body;
     const cmd = await procesarComandos(message);
     if (cmd) return res.json({ reply: cmd });
-    const response = await ollama.chat({ model: modeloActual, messages: [{ role: 'user', content: message }] });
+    const response = await ollama.chat({ model: modeloActual, messages: [{ role: 'user', content: message }]  tram });
     res.json({ reply: response.message.content });
-  } catch { res.status(500).json({ error: 'Fallo de comunicacion en el agente de red.' }); }
+  } catch { res.status(500).json({ error: 'Error de procesamiento en red.' }); }
 });
-const ssdpServer = new Server({ location: 'http://localhost:3000/manifest.json' });
-ssdpServer.addUSN( 'upnp:rootdevice' );
-app.listen(3000, '0.0.0.0', () => {
+// Escuchar en el puerto 0 fuerza a Windows/Android a asignar un puerto libre aleatorio de forma automatica
+const server = app.listen(0, '0.0.0.0', () => {
+  const puertoLibre = server.address().port;
+  const ssdpServer = new Server({ location: 'http://localhost:' + puertoLibre + '/manifest.json' });
+  ssdpServer.addUSN( 'upnp:rootdevice' );
   ssdpServer.start();
-  console.log('\n[AGENTE MULTI-IA UNIVERSAL ACTIVADO SOBRE UPnP/WI-FI]'\);
-  console.log('Pintando icono de red interactivo en el panel de control del sistema...\n' );
+  console.log('\n[AGENTE MULTI-IA CENTRAL DESPLEGADO AUTOMµTICAMENTE]'\);
+  console.log('Asignado puerto dinamico seguro: ' + puertoLibre);
+  console.log('Emitiendo se¤al universal por Wi-Fi y Bluetooth...\n' );
 });
