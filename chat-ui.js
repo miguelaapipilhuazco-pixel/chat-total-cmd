@@ -8,9 +8,20 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   
   let iconBraille = '&#x2817;&#x2803;'; 
   
-  // VECTOR MAESTRO DE 5 DEDOS COMPLETO (ANATOMÍA PURA)
+  // VECTOR MAESTRO CORREGIDO: 5 dedos estilizados, delgados y perfectamente separados
   let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <path d="M12 2a1 1 0 0 0-1 1v6.5a.5.5 0 0 1-1 0V3.5a1 1 0 0 0-2 0V9a.5.5 0 0 1-1 0V4.5a1 1 0 0 0-2 0v6.5a.5.5 0 0 1-1 0V7a1 1 0 0 0-2 0v5.5A7.5 7.5 0 0 0 10.5 20h3A6.5 6.5 0 0 0 20 13.5V7.5a1 1 0 0 0-2 0v3.5a.5.5 0 0 1-1 0V3a1 1 0 0 0-1-1z"/>
+    <!-- Pulgar -->
+    <rect x="3" y="11" width="2.5" height="5" rx="1.2"/>
+    <!-- Índice -->
+    <rect x="6.5" y="5" width="2.3" height="10" rx="1.1"/>
+    <!-- Medio (El más largo y delgado, bien separado) -->
+    <rect x="10" y="3" width="2.2" height="12" rx="1.1"/>
+    <!-- Anular -->
+    <rect x="13.5" y="4.5" width="2.3" height="10.5" rx="1.1"/>
+    <!-- Meñique -->
+    <rect x="17" y="7" width="2.4" height="8" rx="1.2"/>
+    <!-- Base de la Palma Unificada -->
+    <path d="M3.3 14.5c0 0-.3 4.5 4.7 5.5h6c4 0 5-4.5 5-5.5v-2H3.3v2z"/>
   </svg>`; 
   
   let iconTexto = 'Tᴛ'; 
@@ -66,7 +77,7 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       .punto-ico { font-size: 28px; color: rgba(255, 255, 255, 0.5); line-height: 1; -webkit-app-region: no-drag; cursor: pointer; display: flex; items: center; justify-content: center; width: 24px; height: 24px; }
       .punto-ico:hover { color: rgba(255, 255, 255, 0.9); }
       
-      .logo-circulo { -webkit-app-region: no-drag !important; width: 85px; height: 85px; background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 10px; box-sizing: border-box; }
+      .logo-circulo { -webkit-app-region: no-drag !important; width: 85px; height: 85px; background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 10px; box-sizing: border-box; z-index: 20; }
       .logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
     </style>
     <script>
