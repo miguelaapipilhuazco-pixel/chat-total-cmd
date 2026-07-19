@@ -6,17 +6,15 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   let blurNativo = 'backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);';
   let bordeNativo = '1px solid rgba(255, 255, 255, 0.12)';
   
-  // VECTOR MAESTRO PURIFICADO DE ICONOS PROPIOS
   let iconBraille = '&#x2817;&#x2803;'; 
   
-  // Icono 2: Silueta de una Mano Abierta Minimalista (Lenguaje de Señas)
-  let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <path d="M12 2a1 1 0 0 1 1 1v7.17l.83-.83a1 1 0 0 1 1.41 1.41l-2.12 2.12a2 2 0 0 1-2.83 0L8.17 11.75a1 1 0 0 1 1.41-1.41l.83.83V3a1 1 0 0 1 1-1zm6 8a1 1 0 0 1 1 1v3.5a5.5 5.5 0 0 1-11 0V11a1 1 0 1 1 2 0v3.5a3.5 3.5 0 0 0 7 0V11a1 1 0 0 1 1-1z"/>
+  // Icono 2: Vector propio de Mano Extendida de Alta Calidad (Cinco dedos abiertos)
+  let iconSeñas = `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+    <path d="M12 2a1 1 0 0 1 1 1v6.5h.5a1 1 0 0 1 1 1V5a1 1 0 0 1 2 0v5.5h.5a1 1 0 0 1 1 1V6.5a1 1 0 0 1 2 0v5.5H20a1 1 0 0 1 1 1v2a6 6 0 0 1-6 6h-3a6 6 0 0 1-6-6V9a1 1 0 0 1 2 0v2.5h.5V4.5a1 1 0 0 1 2 0V11h.5V3a1 1 0 0 1 1-1z"/>
   </svg>`; 
   
   let iconTexto = 'Tᴛ'; 
   
-  // Icono 4: Micrófono Relleno Sólido (Receptor de Voz)
   let iconVoz = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
     <rect x="9" y="2" width="6" height="12" rx="3" ry="3"/>
     <path d="M19 10a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 0 0 2 0v-4.08A7 7 0 0 0 19 10z"/>
@@ -77,8 +75,8 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
         const c = document.getElementById('modo-com');
         if(m === 'cerrar'){
           e.style.setProperty('display', 'none', 'important');
-          c.style.setProperty('important', 'flex', 'important');
           c.style.display = 'flex';
+          c.style.setProperty('display', 'flex', 'important');
         } else {
           e.style.setProperty('display', 'grid', 'important');
           c.style.setProperty('display', 'none', 'important');
