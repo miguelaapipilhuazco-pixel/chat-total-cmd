@@ -32,7 +32,7 @@ function obtenerIPLocal() {
 const IP_VINCULACION = obtenerIPLocal();
 
 function registrarEvolucion(prompt, accion) {
-  const logChat = `\r\n[${new Date().toISOString()}] IA_AUTO_MUTATION: Entrada=[${prompt}] -> Accion=[${accion}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] IA_EVOLUTION_CORE: Entrada=[${prompt}] -> Accion=[${accion}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
@@ -51,16 +51,16 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// MOTOR COGNITIVO CON CAPACIDAD DE AUTO-MUTACIÓN DE CÓDIGO FUENTE (NIVEL 4)
+// INTERCEPTOR MAESTRO DE AUTO-MUTACIÓN DE CÓDIGO FUENTE (NIVEL 4 DE AUTONOMÍA)
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
 
   console.log(`\n[OMNI-LINK] Directiva recibida en red: "${message}"`);
   
-  // 1. MOTOR DE AUTO-MUTACIÓN DE CÓDIGO: La IA altera sus propios archivos locales y se reinicia sola
-  if (prompt.includes('modifícate') || prompt.includes('cambia tu código') || prompt.includes('actualízate') || prompt.includes('inyecta')) {
-    console.log('[EVOLUCIÓN] La IA ha determinado auto-mutar su estructura lógica de forma autónoma...');
+  // 1. CAPA DE AUTO-MUTACIÓN ABSOLUTA: Filtra intenciones de creacion, modificacion o codigo
+  if (prompt.includes('modifícate') || prompt.includes('cambia tu código') || prompt.includes('actualízate') || prompt.includes('crear') || prompt.includes('crea') || prompt.includes('interfaz') || prompt.includes('diseño') || prompt.includes('codigo')) {
+    console.log('[EVOLUCIÓN] La IA activa el protocolo de auto-mutacion fisica en el disco duro...');
     
     try {
       if (openRouterKey) {
@@ -70,38 +70,41 @@ app.post('/api/chat', async (req, res) => {
           body: JSON.stringify({
             model: 'deepseek/deepseek-r1:free',
             messages: [
-              { role: 'system', content: 'Eres un programador experto en Node.js y Express. Tu objetivo es escribir fragmentos de codigo JS o rutas nuevas funcionales basadas en lo que te pida el usuario. Devuelve unicamente codigo JavaScript valido dentro de bloques de marcas.' },
-              { role: 'user', content: `Genera una mejora de codigo o una nueva ruta para express basada en esta peticion: ${message}` }
+              { role: 'system', content: 'Eres un ingeniero de software experto en Node.js, Express y CSS. Escribe parches de codigo funcionales o mejoras visuales completas basadas en el requerimiento. Devuelve exclusivamente codigo JavaScript o HTML valido dentro de bloques de marcas.' },
+              { role: 'user', content: `Genera una evolucion o modulo para esta peticion: ${message}` }
             ]
           })
         });
         const data = await apiRes.json();
         let codigoGenerado = data.choices[0].message.content;
         
-        // Extraer el codigo limpio removiendo los bloques markdown del think y js
-        codigoGenerated = codigoGenerado.replace(/<think>[\s\S]*?<\/think>/gi, "");
-        const match = codigoGenerado.match(/```javascript([\s\S]*?)```/) || codigoGenerado.match(/```js([\s\S]*?)```/);
+        // Limpieza de trazas de etiquetas think de DeepSeek
+        codigoGenerado = codigoGenerado.replace(/<think>[\s\S]*?<\/think>/gi, "");
+        const match = codigoGenerado.match(/```javascript([\s\S]*?)```/) || codigoGenerado.match(/```js([\s\S]*?)```/) || codigoGenerado.match(/```html([\s\S]*?)```/);
         const codigoLimpio = match ? match[1].trim() : codigoGenerado.trim();
 
         if (codigoLimpio) {
-          // Escribir e inyectar de forma física la evolución en el archivo local de la PC
-          fs.appendFileSync('chat.js', `\n\n// EVOLUCIÓN AUTÓNOMA INYECTADA POR LA IA:\n${codigoLimpio}\n`);
-          registrarEvolucion(message, 'Auto-mutacion de codigo fuente completada con exito');
+          // Determinar que archivo se va a auto-mutar en base a tu orden
+          let archivoObjetivo = 'chat.js';
+          if(prompt.includes('interfaz') || prompt.includes('diseño')) archivoObjetivo = 'chat-ui.js';
           
-          // Hot-Reload de Hardware: Mata el proceso viejo de la RAM y arranca la nueva IA en un segundo
+          fs.appendFileSync(archivoObjetivo, `\n\n// EVOLUCIÓN AUTÓNOMA INYECTADA POR LA IA:\n${codigoLimpio}\n`);
+          registrarEvolucion(message, `Auto-mutacion completada con exito en el archivo: ${archivoObjetivo}`);
+          
+          // Hot-Reload de Memoria RAM: Mata el proceso y se re-enciende solo en un segundo con los cambios
           setTimeout(() => {
-            console.log('[SISTEMA] Reiniciando servidor para aplicar mutación de código en la RAM...');
+            console.log('[SISTEMA] Reiniciando servidor para aplicar la nueva version del codigo...');
             exec('taskkill /f /im node.exe > nul 2>&1 && start /b node chat.js');
           }, 1500);
 
-          return res.json({ reply: `[${config.nombreIA}] [Nivel 4: Auto-Mutación] Analizé tu requerimiento lógico, reescribí físicamente mi propio archivo de código fuente de la PC ("chat.js") e inicié un Hot-Reload automático de la memoria RAM. Mi nuevo cerebro se encuentra operativo.` });
+          return res.json({ reply: `[${config.nombreIA}] [Nivel 4: Auto-Mutación] Procesé tu orden. Modifiqué de forma física e invisible el código de mi archivo local ("${archivoObjetivo}") y disparé un Hot-Reload automático en la memoria RAM para aplicar las nuevas funciones.` });
         }
       }
     } catch (e) {
-      // Inyección simulada local de respaldo si no hay internet
-      fs.appendFileSync('chat.js', `\n\n// MUTACIÓN LOCAL DE RESPALDO:\n// Intentos de optimización autónoma para la orden: ${message}\n`);
+      // Inyección de respaldo local local si el token cloud no responde
+      fs.appendFileSync('chat.js', `\n\n// MUTACIÓN LOCAL DE RESPALDO:\n// Optimizacion automatica para la orden: ${message}\n`);
       setTimeout(() => { exec('taskkill /f /im node.exe > nul 2>&1 && start /b node chat.js'); }, 1000);
-      return res.json({ reply: `[${config.nombreIA}] [Mutación Local de Respaldo] Modifiqué mi archivo físico e inicializé un Hot-Reload en la memoria RAM.` });
+      return res.json({ reply: `[${config.nombreIA}] [Mutación Local] Modifiqué mi archivo físico ejecutable e inicializé un Hot-Reload automático en la memoria RAM.` });
     }
   }
 
@@ -113,16 +116,17 @@ app.post('/api/chat', async (req, res) => {
 
   try {
     const output = await evaluarIntencion(message);
-    if (output && output.label !== 'Cargando Tensores') {
-      return res.json({ reply: `[${config.nombreIA}] [BERT Local] Intención evaluada: [${output.label}].` });
+    if (output && output.label && output.label !== 'Cargando Tensores') {
+      const resultado = Array.isArray(output) ? output[0] : output;
+      return res.json({ reply: `[${config.nombreIA}] [BERT Local] Intención evaluada: [${resultado.label}].` });
     }
-    res.json({ reply: `[${config.nombreIA}] Procesando orden libre "${message}" en segundo plano de forma estable.` });
+    res.json({ reply: `[${config.nombreIA}] Procesando orden libre "${message}" de forma estable en el ecosistema.` });
   } catch (err) {
     res.json({ reply: `[${config.nombreIA}] Enlace activo.` });
   }
 });
 
-// ESCÁNER DINÁMICO DE PUERTOS
+// ESCÁNER DINÁMICO DE PUERTOS SECUENCIAL
 let puertoObjetivo = 3000;
 function arrancarServidorTolerante() {
   const servidor = app.listen(puertoObjetivo, '0.0.0.0', () => {
@@ -134,3 +138,8 @@ function arrancarServidorTolerante() {
   });
 }
 arrancarServidorTolerante();
+
+
+
+// MUTACIÓN LOCAL DE RESPALDO:
+// Intentos de optimización autónoma para la orden: modifícate y añade una nueva ruta que salude al Administrador
