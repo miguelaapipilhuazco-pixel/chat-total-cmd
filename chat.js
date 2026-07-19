@@ -69,9 +69,9 @@ app.get('/', (req, res) => {
       <div></div>
     </div>
 
-    <!-- ESTADO 2: EL LOGOTIPO CIENTÍFICO OFICIAL (Acrílico, Dorado y Pulsante) -->
+    <!-- ESTADO 2: EL LOGOTIPO CIENTÍFICO OFICIAL (Compacto, Centrado y Estético) -->
     <div id="modo-compacto" class="w-[240px] h-[240px] flex items-center justify-center bg-transparent" style="display: none;">
-      <div onclick="mutarEstado('abrir')" title="Ecosistema Arturo" class="icon-button w-24 h-24 bg-zinc-950/80 border-2 border-amber-500/30 rounded-full flex items-center justify-center shadow-2xl shadow-amber-500/20 overflow-hidden p-2 backdrop-blur-md animate-pulse">
+      <div onclick="mutarEstado('abrir')" title="Ecosistema Arturo" class="icon-button w-20 h-20 bg-zinc-950/90 border-2 border-amber-500/40 rounded-full flex items-center justify-center shadow-2xl overflow-hidden p-3 backdrop-blur-md animate-pulse mx-auto">
         <img src="/logo.png" class="w-full h-full object-contain pointer-events-none" />
       </div>
     </div>
