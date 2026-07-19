@@ -8,3 +8,4 @@
 [2026-07-19T15:23:01.777Z] ATENEA_CORE: Orden=[descarga todos los modelos de open source y guardalos en la nube, tu ya sabes como guardar informacion en la nube?] -> Accion=[Descargando IA: todos los s de open source y guardalos en la nube, tu ya sabes como guardar informacion en la nube?]
 [2026-07-19T15:23:52.375Z] ATENEA_CORE: Orden=[descarga gemma2] -> Accion=[Descargando IA: gemma2]
 [2026-07-19T15:25:26.506Z] ATENEA_CORE: Orden=[descarga todas las ias que se parezcan a ti] -> Accion=[Descargando IA: todas las ias que se parezcan a ti]
+[2026-07-19T15:26:20.537Z] ATENEA_SEMANTICA: Entrada=[descarga todas las ias que se parezcan a ti] -> Accion=[Descarga semántica masiva: llama3.2, qwen2.5:0.5b, gemma2:2b]
