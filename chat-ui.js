@@ -127,7 +127,7 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
     <div id="modo-ext" class="capsula-cruz" style="display: grid;">
       <div></div>
       <div class="icon-wrapper">
-        <div onclick="dispararFuncion('braille')" class="icon-btn" style="font-size: 26px; font-weight: bold;">${iconBraille}</div>
+        <div onclick="dispararFuncion('braille')" class="icon-btn" style="font-size: 26px; font-weight: bold; margin-top: 8px;">${iconBraille}</div>
         <span class="tooltip-text">Braille</span>
       </div>
       <div></div>
