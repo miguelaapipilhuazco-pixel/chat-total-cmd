@@ -3,31 +3,41 @@ import express from 'express';
 import { exec } from 'child_process';
 const app = express();
 app.use(express.json());
-let modeloActual = 'llama3.2:latest';
+let modeloActual = 'ia-ingenieria';
+const permisosRoles = { administrador: ['chat', 'descarga', 'clona'], ingeniero: ['chat', 'descarga'], invitado: ['chat'] };
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, rol } = req.body;
+    const usuarioRol = rol ? rol.toLowerCase().trim() : 'invitado';
+    const permisosActuales = permisosRoles[usuarioRol] ? permisosRoles[usuarioRol] : permisosRoles.invitado;
     const prompt = message.toLowerCase().trim();
-    if (prompt.startsWith( 'usa el modelo ' )) {
-      modeloActual = message.split( ' ' ).pop();
-      return res.json({ reply: 'Cerebro de la IA actualizado a: ' + modeloActual });
+    if (prompt.startsWith( 'clona ' )) {
+      if (!permisosActuales.includes('clona')) return res.status(403).json({ error: 'Acceso Denegado.' });
+      exec(`git clone https://github.com{message.split( ' ' ).pop()}`);
+      return res.json({ reply: 'Clonando repositorio con privilegios de Administrador...' });
     }
     if (prompt.startsWith( 'descarga ' )) {
+      if (!permisosActuales.includes('descarga')) return res.status(403).json({ error: 'Acceso Denegado.' });
       exec(`ollama pull ${message.split( ' ' ).pop()}`);
-      return res.json({ reply: 'Instalando componente en segundo plano...' });
+      return res.json({ reply: 'Descargando modelo en segundo plano...' });
     }
-    // DIRECTIVA DE IDIOMA DINÁMICO: Fuerza al modelo de Ollama a responder en el mismo idioma del usuario
     const contexto = [
-      { role: 'system', content: 'REGLA MANDATORIA: Debes detectar el idioma del usuario y responder ÚNICAMENTE en ese mismo idioma. Si te hablan en español, responde al 100%% en español fluido.' },
+      { role: 'system', content: 'REGLA: Detecta el idioma del usuario y responde unicamente en ese mismo idioma.' },
       { role: 'user', content: message }
     ];
     const response = await ollama.chat({ model: modeloActual, messages: contexto });
     res.json({ reply: response.message.content });
-  } catch { res.status(500).json({ error: 'Fallo de comunicacion con el motor local.' }); }
+  } catch { res.status(500).json({ error: 'Error interno en el orquestador.' }); }
 });
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[AGENTE IA SEMANA DE LA INGENIERIA RECONFIGURADO - IDIOMA DINÁMICO]');
+  console.log('\n[AGENTE MULTI-IA EVOLUTIVO Y AUTOMATIZADO ACTIVO]');
   setInterval(() => {
+    exec('git pull origin main', (err, stdout) => {
+      if (stdout && !stdout.includes( 'Already up to date' )) {
+        console.log('[EVOLUCION] Detectadas nuevas actualizaciones en GitHub. Aplicando cambios...');
+        exec('ollama create ia-ingenieria -f ./Modelfile && taskkill /f /im node.exe && node chat-ollama.js');
+      }
+    });
     exec('netsh wlan set hostednetwork mode=allow ssid="IA Semana de la Ingenieria" > nul 2>&1');
     exec('netsh wlan start hostednetwork > nul 2>&1');
   }, 300000);
