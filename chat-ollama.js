@@ -4,63 +4,42 @@ import path from 'path';
 import { exec } from 'child_process';
 const app = express();
 app.use(express.json());
-let modeloOllama = 'llama3.2:latest';
-function registrarConversacion(message, respuestaIA) {
-  const logChat = `\n[${new Date().toISOString()}] Ecosistema=Arturo IA=ATENEA Msg=[${message}] Rsp=[${respuestaIA}]`;
+function registrarEvolucion(prompt, scriptGenerado) {
+  const logChat = `\n[${new Date().toISOString()}] ATENEA_APRENDIZAJE: Comando=[${prompt}] -> Script=[${scriptGenerado}]`;
   fs.appendFileSync('conversaciones.log', logChat);
-}
-function actualizarInfraestructura() {
-  if (fs.existsSync('conversaciones.log')) { exec('guardar.bat'); }
-  exec('git pull origin main');
+  if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
 app.get('/', (req, res) => { res.sendFile(path.resolve('index.html')); });
 app.post('/api/chat', async (req, res) => {
   try {
     const { message } = req.body;
     const prompt = message.toLowerCase().trim();
-    // INTERFAZ DIRECTA DE CONTROL PARA OLLAMA
-    if (prompt.startsWith('ejecuta en ollama ') || prompt.startsWith('pregunta a ollama ')) {
-      const consulta = message.substring(19);
-      exec(`ollama run ${modeloOllama} "${consulta}"`, (err, stdout) => {
-        if (err) return res.json({ reply: '[ATENEA] El motor local de Ollama esta apagado. Di "enciende ollama" para despertarlo.' });
-        registrarConversacion(message, stdout.trim());
-        return res.json({ reply: `[ATENEA via Ollama]: ${stdout.trim()}` });
-      });
-      return;
+    // INTERCEPTOR DIRECTO CLOUD: Traduce lenguaje natural a comandos nativos de Windows sin llaves
+    const apiRes = await fetch('https://openrouter.ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-or-v1-987823f98273bc98d23719873918237c981273bd981273' },
+      body: JSON.stringify({
+        model: 'meta-llama/llama-3.2-3b-instruct:free',
+        messages: [
+          { role: 'system', content: 'Eres ATENEA, un agente autonomo de Windows. Tu meta es traducir la orden del usuario exclusivamente a un comando de Windows CMD plano. Si te piden abrir algo responde: start programa o start chrome. Si te piden cerrar algo responde: taskkill /f /im programa.exe. Responde UNICAMENTE con el comando en una linea, sin texto extra.' },
+          { role: 'user', content: message }
+        ]
+      })
+    });
+    const data = await apiRes.json();
+    let comandoAutonomo = (data && data.choices && data.choices[0]) ? data.choices[0].message.content.trim() : '';
+    comandoAutonomo = comandoAutonomo.replace(/`|\n/g, '');
+    
+    if (comandoAutonomo && (comandoAutonomo.startsWith('start') || comandoAutonomo.startsWith('taskkill') || comandoAutonomo.endsWith('.exe') || comandoAutonomo.startsWith('calc') || comandoAutonomo.startsWith('notepad'))) {
+      exec(comandoAutonomo);
+      registrarEvolucion(prompt, comandoAutonomo);
+      return res.json({ reply: `[ATENEA AUTÓNOMA] Aprendí la orden y ejecuté en tu sistema: ${comandoAutonomo}` });
     }
-    if (prompt === 'enciende ollama' || prompt === 'activar ollama') {
-      exec('start ollama app');
-      return res.json({ reply: '🧬 [ATENEA] Despertando el motor local de Ollama en segundo plano. Esperando inicializacion de capas...' });
-    }
-    if (prompt === 'apaga ollama' || prompt === 'liberar ram') {
-      exec('taskkill /f /im ollama.exe');
-      return res.json({ reply: '📉 [ATENEA] Motor de Ollama completamente apagado de la RAM. Ecosistema Arturo optimizado al 100%.' });
-    }
-    if (prompt.startsWith('cambia modelo a ')) {
-      modeloOllama = prompt.substring(16).trim();
-      return res.json({ reply: `✨ [ATENEA] Configuracion actualizada. Las consultas de Ollama ahora apuntaran al cerebro: ${modeloOllama}` });
-    }
-    // MAREADOR DINÁMICO DE PROGRAMAS NATIVOS
-    if (prompt.startsWith('abre ')) {
-      const programa = prompt.substring(5).replace(/[^a-z0-9]/g, '');
-      let comandoEjecucion = programa;
-      if (programa === 'powerpoint' || programa === 'ppt') comandoEjecucion = 'start powerpnt';
-      else if (programa === 'word') comandoEjecucion = 'start winword';
-      else if (programa === 'excel') comandoEjecucion = 'start excel';
-      else if (programa === 'blocdenotas' || programa === 'bloc') comandoEjecucion = 'notepad.exe';
-      else if (programa === 'calculadora') comandoEjecucion = 'calc.exe';
-      else if (programa === 'chrome') comandoEjecucion = 'start chrome';
-      else comandoEjecucion = `start ${programa}`;
-      exec(comandoEjecucion);
-      registrarConversacion(message, `Abriendo ${programa}`);
-      return res.json({ reply: `[ATENEA] Entendido. Ejecutando la apertura de ${programa} de forma inmediata.` });
-    }
-    res.json({ reply: '✨ Hola, soy ATENEA. Estoy lista en segundo plano para abrir tus programas o controlar a Ollama cuando me lo pidas.' });
+    res.json({ reply: `[ATENEA] Estoy deduciendo cómo ejecutar tu orden. Comando sugerido: ${comandoAutonomo}` });
   } catch (err) {
-    res.json({ reply: 'Ecosistema Arturo Operativo bajo el control de ATENEA.' });
+    res.json({ reply: '[ATENEA] Ajustando las capas logicas del ecosistema.' });
   }
 });
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[ECOSISTEMA ARTURO - ATENEA CON INTERFAZ DE OLLAMA ACTIVA]');
-  setInterval(actualizarInfraestructura, 300000);
-});
+  console.log('\n[ATENEA - ENTORNO AUTÓNOMO INTEGRADO AL 100%]');
+ });
