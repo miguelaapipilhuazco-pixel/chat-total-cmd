@@ -41,14 +41,14 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; width: 100vw; height: 100vh; display: flex; items: center; justify-content: center; }
       
       .capsula-cruz {
-        -webkit-app-region: drag; width: 150px; height: 150px;
+        -webkit-app-region: drag; width: 160px; height: 160px;
         background-color: ${colorOscuroNativo} !important;
         ${blurNativo}
         border: ${bordeNativo};
         border-radius: 50%;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-        align-items: center; justify-items: center; padding: 12px; box-sizing: border-box; cursor: move;
+        align-items: center; justify-items: center; padding: 18px; margin-top: 10px; box-sizing: border-box; cursor: move;
       }
       
       .capsula-compacta {
