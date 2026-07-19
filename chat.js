@@ -143,3 +143,7 @@ arrancarServidorTolerante();
 
 // MUTACIÓN LOCAL DE RESPALDO:
 // Intentos de optimización autónoma para la orden: modifícate y añade una nueva ruta que salude al Administrador
+
+
+// MUTACIÓN LOCAL DE RESPALDO:
+// Optimizacion automatica para la orden: puedes crear interfaces?
