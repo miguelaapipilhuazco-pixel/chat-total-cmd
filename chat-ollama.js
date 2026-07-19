@@ -1,6 +1,8 @@
 import express from 'express';
 import fs from 'fs';
 import { exec } from 'child_process';
+import pkg from 'duck-duck-scrape';
+const { Conversation } = pkg;
 const app = express();
 app.use(express.json());
 let modoInteractiva = 'texto';
@@ -19,28 +21,21 @@ app.get('/', (req, res) => {
   res.send(`<!DOCTYPE html><html><body style="background:#000;color:#fff;font-family:sans-serif;text-align:center"><h2>🤖 Canales Multimodal Cloud</h2></body></html>`);
 });
 app.post('/api/modo', (req, res) => {
-  const { modo, rol } = req.body;
-  const r = rol ? rol.toLowerCase().trim() : 'invitado';
+  const { modo } = req.body;
   modoInteractiva = modo;
-  res.json({ status: 'Modo cambiado en la nube: ' + modoInteractiva });
+  res.json({ status: 'Modo conmutado: ' + modoInteractiva });
 });
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, rol } = req.body;
     const r = rol ? rol.toLowerCase().trim() : 'invitado';
-    // CONEXIÓN SERVERLESS: Llama a la API externa de IA de codigo abierto sin tocar tu memoria RAM
-    const apiResponse = await fetch('https://huggingface.co', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ inputs: message })
-    });
-    const data = await apiResponse.json();
-    const respuestaIA = data[0] ? data[0].generated_text : 'Procesado en la nube con exito.';
-    registrarConversacion(r, message, respuestaIA);
-    res.json({ reply: respuestaIA });
-  } catch { res.status(500).json({ error: 'Fallo el nodo cloud.' }); }
+    // LLAMADA CLOUD CORREGIDA: Invoca el modulo de IA de Meta de forma 100% anonima y libre sin usar RAM local
+    const response = await Conversation.ask(message, 'llama');
+    registrarConversacion(r, message, response);
+    res.json({ reply: response });
+  } catch { res.status(500).json({ error: 'Fallo el nodo cloud libre.' }); }
 });
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[AGENTE IA SEMANA DE LA INGENIERIA CORRIENDO EN MODO CLOUD - 0%% RAM]');
+  console.log('\n[AGENTE IA SEMANA DE LA INGENIERIA TOTALMENTE OPERATIVO - MODO CLOUD]');
   setInterval(actualizarInfraestructura, 300000);
 });
