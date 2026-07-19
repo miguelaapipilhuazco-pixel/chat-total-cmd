@@ -8,19 +8,12 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   
   let iconBraille = '&#x2817;&#x2803;'; 
   
-  // VECTOR MAESTRO CORREGIDO: 5 dedos estilizados, delgados y perfectamente separados
   let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <!-- Pulgar -->
     <rect x="3" y="11" width="2.5" height="5" rx="1.2"/>
-    <!-- Índice -->
     <rect x="6.5" y="5" width="2.3" height="10" rx="1.1"/>
-    <!-- Medio (El más largo y delgado, bien separado) -->
     <rect x="10" y="3" width="2.2" height="12" rx="1.1"/>
-    <!-- Anular -->
     <rect x="13.5" y="4.5" width="2.3" height="10.5" rx="1.1"/>
-    <!-- Meñique -->
     <rect x="17" y="7" width="2.4" height="8" rx="1.2"/>
-    <!-- Base de la Palma Unificada -->
     <path d="M3.3 14.5c0 0-.3 4.5 4.7 5.5h6c4 0 5-4.5 5-5.5v-2H3.3v2z"/>
   </svg>`; 
   
@@ -63,6 +56,9 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
         display: none; align-items: center; justify-content: center; background: transparent !important; cursor: move;
       }
       
+      /* CONTENEDOR RELATIVO PARA EL TOOLTIP INTEGRADO */
+      .icon-wrapper { position: relative; display: flex; items-center: center; justify-content: center; }
+      
       .icon-btn { 
         -webkit-app-region: no-drag !important; 
         transition: transform 0.2s ease, filter 0.2s; 
@@ -74,18 +70,35 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       .icon-btn:hover { transform: scale(1.15); filter: brightness(1.4) !important; }
       .icon-btn:active { transform: scale(0.92); }
       
-            .punto-ico { 
-        font-size: 28px; 
-        color: rgba(255, 255, 255, 0.5); 
-        line-height: 1; 
-        -webkit-app-region: no-drag; 
-        cursor: pointer; 
-        display: flex; 
-        items-center: center; 
-        justify-content: center; 
-        width: 24px; 
-        height: 24px; 
-        margin-top: -6px; /* Desplazamiento exacto para fijarlo en el centro matemático */
+      /* DISEÑO DE NUEVOS TOOLTIPS ADAPTADOS AL FRONTEND DE BAJA DENSIDAD */
+      .icon-wrapper .tooltip-text {
+        visibility: hidden;
+        background-color: rgba(20, 20, 20, 0.9);
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        border-radius: 8px;
+        padding: 4px 8px;
+        position: absolute;
+        z-index: 100;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        pointer-events: none;
+      }
+      .icon-wrapper:hover .tooltip-text { visibility: visible; opacity: 1; }
+      
+      .punto-ico { 
+        font-size: 28px; color: rgba(255, 255, 255, 0.5); line-height: 1; 
+        -webkit-app-region: no-drag; cursor: pointer; display: flex; 
+        items: center; justify-content: center; width: 24px; height: 24px; 
+        margin-top: -6px; 
       }
       .punto-ico:hover { color: rgba(255, 255, 255, 0.9); }
       
@@ -113,19 +126,41 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   <body>
     <div id="modo-ext" class="capsula-cruz" style="display: grid;">
       <div></div>
-      <div onclick="dispararFuncion('braille')" title="Braille" class="icon-btn" style="font-size: 26px; font-weight: bold;">${iconBraille}</div>
+      <div class="icon-wrapper">
+        <div onclick="dispararFuncion('braille')" class="icon-btn" style="font-size: 26px; font-weight: bold;">${iconBraille}</div>
+        <span class="tooltip-text">Braille</span>
+      </div>
       <div></div>
-      <div onclick="dispararFuncion('señas')" title="Lenguaje de Señas" class="icon-btn">${iconSeñas}</div>
-      <div onclick="mutar('cerrar')" class="punto-ico icon-btn">•</div>
-      <div onclick="dispararFuncion('texto')" title="Texto" class="icon-btn" style="font-size: 22px; font-weight: bold; font-family: 'Times New Roman', serif; line-height: 1;">${iconTexto}</div>
+      
+      <div class="icon-wrapper">
+        <div onclick="dispararFuncion('señas')" class="icon-btn">${iconSeñas}</div>
+        <span class="tooltip-text">Lenguaje de Señas</span>
+      </div>
+      
+      <div class="icon-wrapper">
+        <div onclick="mutar('cerrar')" class="punto-ico icon-btn">•</div>
+        <span class="tooltip-text">Compactar</span>
+      </div>
+      
+      <div class="icon-wrapper">
+        <div onclick="dispararFuncion('texto')" class="icon-btn" style="font-size: 22px; font-weight: bold; font-family: 'Times New Roman', serif; line-height: 1;">${iconTexto}</div>
+        <span class="tooltip-text">Texto</span>
+      </div>
       <div></div>
-      <div onclick="dispararFuncion('voz')" title="Voz" class="icon-btn">${iconVoz}</div>
+      
+      <div class="icon-wrapper">
+        <div onclick="dispararFuncion('voz')" class="icon-btn">${iconVoz}</div>
+        <span class="tooltip-text">Voz</span>
+      </div>
       <div></div>
     </div>
     
     <div id="modo-com" class="capsula-compacta">
-      <div onclick="mutar('abrir')" class="icon-btn logo-circulo">
-        <img src="/logo.png" class="logo-img" />
+      <div class="icon-wrapper">
+        <div onclick="mutar('abrir')" class="icon-btn logo-circulo">
+          <img src="/logo.png" class="logo-img" />
+        </div>
+        <span class="tooltip-text">Expandir</span>
       </div>
     </div>
   </body>
