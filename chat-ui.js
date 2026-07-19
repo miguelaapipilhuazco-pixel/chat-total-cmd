@@ -40,24 +40,26 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
     <style>
       body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; width: 100vw; height: 100vh; display: flex; items: center; justify-content: center; }
       
+      /* MARGEN DE DESCENSO FIJADO: Empuja los dos estados hacia abajo para evitar recortes */
       .capsula-cruz {
-        -webkit-app-region: drag; width: 160px; height: 160px;
+        -webkit-app-region: drag; width: 150px; height: 150px;
         background-color: ${colorOscuroNativo} !important;
         ${blurNativo}
         border: ${bordeNativo};
         border-radius: 50%;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-        align-items: center; justify-items: center; padding: 18px; margin-top: 10px; box-sizing: border-box; cursor: move;
+        align-items: center; justify-items: center; padding: 12px; box-sizing: border-box; cursor: move;
+        margin: 40px auto 0 auto !important;
       }
       
       .capsula-compacta {
         -webkit-app-region: drag; width: 150px; height: 150px;
         display: none; align-items: center; justify-content: center; background: transparent !important; cursor: move;
+        margin: 40px auto 0 auto !important;
       }
       
-      /* CONTENEDOR RELATIVO PARA EL TOOLTIP INTEGRADO */
-      .icon-wrapper { position: relative; display: flex; items-center: center; justify-content: center; }
+      .icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
       
       .icon-btn { 
         -webkit-app-region: no-drag !important; 
@@ -70,10 +72,9 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       .icon-btn:hover { transform: scale(1.15); filter: brightness(1.4) !important; }
       .icon-btn:active { transform: scale(0.92); }
       
-      /* DISEÑO DE NUEVOS TOOLTIPS ADAPTADOS AL FRONTEND DE BAJA DENSIDAD */
       .icon-wrapper .tooltip-text {
         visibility: hidden;
-        background-color: rgba(20, 20, 20, 0.9);
+        background-color: rgba(20, 20, 20, 0.95);
         color: rgba(255, 255, 255, 0.9);
         text-align: center;
         border-radius: 8px;
@@ -94,12 +95,7 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       }
       .icon-wrapper:hover .tooltip-text { visibility: visible; opacity: 1; }
       
-      .punto-ico { 
-        font-size: 28px; color: rgba(255, 255, 255, 0.5); line-height: 1; 
-        -webkit-app-region: no-drag; cursor: pointer; display: flex; 
-        items: center; justify-content: center; width: 24px; height: 24px; 
-        margin-top: -6px; 
-      }
+      .punto-ico { font-size: 28px; color: rgba(255, 255, 255, 0.5); line-height: 1; -webkit-app-region: no-drag; cursor: pointer; display: flex; items: center; justify-content: center; width: 24px; height: 24px; margin-top: -6px; }
       .punto-ico:hover { color: rgba(255, 255, 255, 0.9); }
       
       .logo-circulo { -webkit-app-region: no-drag !important; width: 85px; height: 85px; background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 10px; box-sizing: border-box; z-index: 20; }
@@ -127,27 +123,23 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
     <div id="modo-ext" class="capsula-cruz" style="display: grid;">
       <div></div>
       <div class="icon-wrapper">
-        <div onclick="dispararFuncion('braille')" class="icon-btn" style="font-size: 26px; font-weight: bold; margin-top: 8px;">${iconBraille}</div>
+        <div onclick="dispararFuncion('braille')" class="icon-btn" style="font-size: 26px; font-weight: bold;">${iconBraille}</div>
         <span class="tooltip-text">Braille</span>
       </div>
       <div></div>
-      
       <div class="icon-wrapper">
         <div onclick="dispararFuncion('señas')" class="icon-btn">${iconSeñas}</div>
         <span class="tooltip-text">Lenguaje de Señas</span>
       </div>
-      
       <div class="icon-wrapper">
         <div onclick="mutar('cerrar')" class="punto-ico icon-btn">•</div>
         <span class="tooltip-text">Compactar</span>
       </div>
-      
       <div class="icon-wrapper">
         <div onclick="dispararFuncion('texto')" class="icon-btn" style="font-size: 22px; font-weight: bold; font-family: 'Times New Roman', serif; line-height: 1;">${iconTexto}</div>
         <span class="tooltip-text">Texto</span>
       </div>
       <div></div>
-      
       <div class="icon-wrapper">
         <div onclick="dispararFuncion('voz')" class="icon-btn">${iconVoz}</div>
         <span class="tooltip-text">Voz</span>
