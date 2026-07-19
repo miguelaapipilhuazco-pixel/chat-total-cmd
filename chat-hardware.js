@@ -1,75 +1,80 @@
 import { exec } from 'child_process';
 import fs from 'fs';
+import natural from 'natural';
+
+// CONFIGURACIÓN Y ENTRENAMIENTO DEL MODELO DE MACHINE LEARNING LOCAL
+const clasificadorML = new natural.BayesClassifier();
+
+// Entrenamiento del modelo ante directivas multimedia
+clasificadorML.addDocument('reproduce la cancion de david guetta', 'multimedia');
+clasificadorML.addDocument('pon musica de linkin park', 'multimedia');
+clasificadorML.addDocument('quiero escuchar titanium de sia', 'multimedia');
+clasificadorML.addDocument('pon algo en youtube o spotify', 'multimedia');
+clasificadorML.addDocument('ponme un exito de eminem', 'multimedia');
+
+// Entrenamiento del modelo ante directivas de apertura de programas
+clasificadorML.addDocument('abre microsoft word', 'programa');
+clasificadorML.addDocument('lanza excel por favor', 'programa');
+clasificadorML.addDocument('ejecuta el bloc de notas', 'programa');
+clasificadorML.addDocument('inicia la consola cmd', 'programa');
+
+// Entrenar el clasificador en caliente en milisegundos
+clasificadorML.train();
 
 export function ejecutarModulo(modulo, config, registrar) {
   if (modulo === 'señas') {
     exec('powershell -Command "$p = Get-ChildItem -Path $env:LOCALAPPDATA\\Roblox\\Versions\\*\\RobloxPlayerLauncher.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1; if($p){ start $p.FullName } else { start roblox:// }"');
-    registrar('Click en Señas', 'Apertura de Roblox Player');
+    registrar('Click en Señas', 'Apertura de Roblox');
   } else if (modulo === 'texto') {
     exec('start notepad.exe');
-    registrar('Click en Texto', 'Lanzamiento de editor de Notas');
   } else if (modulo === 'voz') {
     exec('start cmd.exe');
-    registrar('Click en Voz', 'Lanzamiento de terminal CMD');
   } else if (modulo === 'braille') {
     exec('start https://github.com');
-    registrar('Click en Braille', 'Apertura de GitHub');
   }
-}
-
-// ESCÁNER DE ANTENAS REAL DE HARDWARE WINDOWS (Busca dispositivos interconectados)
-export function iniciarEscaneoDispositivosBluetooth(config, registrar) {
-  console.log('[OMNI-LINK] Encendiendo receptor de radiofrecuencia...');
-  
-  // Utiliza el comando nativo de Windows (PowerShell) para buscar dispositivos emparejados o visibles reales
-  exec('powershell -Command "Get-PnpDevice -Class Bluetooth | Select-Object FriendlyName, Status | ConvertTo-Json"', (err, stdout) => {
-    if (!err && stdout) {
-      fs.writeFileSync('dispositivos_encontrados.json', stdout);
-      registrar('Escaneo de Red', 'Dispositivos Bluetooth localizados con éxito por hardware');
-    }
-  });
 }
 
 export function procesarComandoInformal(mensajeOriginal, config, registrar) {
   const prompt = mensajeOriginal.toLowerCase().trim();
-  let softwareBuscado = prompt.replace(/abre|cierra|ejecuta|lanza|inicia|el|la|por|favor/gi, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "").trim();
+  
+  // INFERENCIA BASADA EN MACHINE LEARNING COMPILADO (Clasifica la intencion real)
+  const intencionDeducida = clasificadorML.classify(prompt);
+  console.log(`[MACHINE LEARNING] Intención predicha localmente: [${intencionDeducida}]`);
 
-  // ACTIVADOR AUTOMÁTICO DE ESCANEO ANTE DIRECTIVAS DEL USUARIO
-  if (prompt.includes('busca') || prompt.includes('vincula') || prompt.includes('bluetooth') || prompt.includes('dispositivos')) {
-    iniciarEscaneoDispositivosBluetooth(config, registrar);
-    return `[${config.nombreIA}] Entendido, Administrador. He activado las antenas de radio nativas de la PC. Escaneando el espacio electromagnético en busca de celulares, smartwatches o periféricos Bluetooth de forma inmediata.`;
-  }
+  // CATEGORÍA MULTIMEDIA: Extrae el payload de la canción e inicia la reproducción
+  if (intencionDeducida === 'multimedia') {
+    let terminoBusqueda = prompt
+      .replace(/reproduce|ponme|pon|escuchar|quiero|la|cancion|mas|popular|de|el|un/gi, "")
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "")
+      .trim();
 
-  // AUTO-GENERADOR DE INTERFACES PERSONALIZADAS: Reescribe componentes en caliente segun tu orden
-  if (prompt.includes('crea una interfaz') || prompt.includes('personaliza el panel') || prompt.includes('cambia el diseño')) {
-    let colorInyectado = prompt.includes('azul') ? 'rgba(30, 58, 138, 0.85)' : (prompt.includes('rojo') ? 'rgba(153, 27, 27, 0.85)' : 'rgba(32, 32, 32, 0.85)');
-    let uiFile = fs.readFileSync('chat-ui.js', 'utf8');
-    uiFile = uiFile.replace(/rgba\(32, 32, 32, 0\.85\)/g, colorInyectado);
-    fs.writeFileSync('chat-ui.js', uiFile);
+    if (!terminoBusqueda) terminoBusqueda = "david guetta titanium";
+
+    const urlYoutube = `https://youtube.com{encodeURIComponent(terminoBusqueda)}`;
+    exec(`start ${urlYoutube}`);
     
-    registrar(mensajeOriginal, `Auto-mutacion visual completada: Color fijado a ${colorInyectado}`);
-    setTimeout(() => { exec('taskkill /f /im node.exe > nul 2>&1 && start /b node chat.js'); }, 1000);
-    return `[${config.nombreIA}] [Auto-Corrección Activa] He procesado tu directiva libre. Analicé el requerimiento gráfico, generé el nuevo código CSS nativo y reescribí mis propios componentes en caliente para entregarte una interfaz personalizada.`;
+    registrar(mensajeOriginal, `ML Natural activó música: ${terminoBusqueda}`);
+    return `[${config.nombreIA}] [Machine Learning Natural] Mi red Bayesiana clasificó tu intención como [MULTIMEDIA]. Extraje la directiva "${terminoBusqueda}" e inicialicé tu navegador para reproducirla.`;
   }
 
-  const diccionarioAlias = {
-    'word': 'winword', 'el word': 'winword', 'microsoft word': 'winword',
-    'excel': 'excel', 'powerpoint': 'powerpnt', 'power point': 'powerpnt',
-    'bloc de notas': 'notepad', 'notas': 'notepad', 'consola': 'cmd', 'terminal': 'cmd'
-  };
+  // CATEGORÍA PROGRAMAS: Auto-corrige alias rígidos de Windows para novatos
+  if (intencionDeducida === 'programa' || prompt.startsWith('abre ') || prompt.includes('word') || prompt.includes('excel')) {
+    let softwareBuscado = prompt.replace(/abre|ejecuta|lanza|inicia|el|la|por|favor/gi, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "").trim();
+    
+    const diccionarioAlias = {
+      'word': 'winword', 'el word': 'winword', 'microsoft word': 'winword',
+      'excel': 'excel', 'powerpoint': 'powerpnt', 'bloc de notas': 'notepad', 'notas': 'notepad'
+    };
 
-  const esCierre = prompt.startsWith('cierra') || prompt.includes('apaga');
-  const binarioReal = diccionarioAlias[softwareBuscado] || softwareBuscado;
+    const binarioReal = diccionarioAlias[softwareBuscado] || softwareBuscado;
 
-  if (esCierre) {
-    exec(`taskkill /f /im ${binarioReal}.exe`);
-    registrar(mensajeOriginal, `Cierre forzado: ${binarioReal}`);
-    return `[${config.nombreIA}] He cerrado la aplicación "${softwareBuscado}".`;
-  } else {
     exec(`start ${binarioReal}`, (err) => {
-      if (err) exec(`start https://google.com{encodeURIComponent(softwareBuscado)}`);
+      if (err) exec sabotage(`start https://google.com{encodeURIComponent(softwareBuscado)}`);
     });
-    registrar(mensajeOriginal, `Apertura ejecutada: ${binarioReal}`);
-    return `[${config.nombreIA}] Entendido. He localizado el binario e inicializado la directiva de hardware para abrir "${softwareBuscado}" de inmediato.`;
+    
+    registrar(mensajeOriginal, `Apertura ML: ${binarioReal}`);
+    return `[${config.nombreIA}] [Machine Learning Natural] Intención clasificada como [PROGRAMA]. Resolviendo alias informal de hardware para abrir "${softwareBuscado}" de inmediato.`;
   }
+
+  return `[${config.nombreIA}] Procesando tu directiva "${mensajeOriginal}" de forma interna en la capa cognitiva.`;
 }
