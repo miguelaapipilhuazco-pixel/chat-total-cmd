@@ -9,18 +9,16 @@ app.post('/api/chat', async (req, res) => {
     const { message } = req.body;
     if (message.toLowerCase().includes( 'descarga ' )) {
       exec(`ollama pull ${message.split( ' ' ).pop()}`);
-      return res.json({ reply: 'Instalando en la nube...' });
+      return res.json({ reply: 'Descargando recurso Open Source...' });
     }
     const response = await ollama.chat({ model: modeloActual, messages: [{ role: 'user', content: message }] });
     res.json({ reply: response.message.content });
   } catch { res.status(500).json({ error: 'Fallo de red.' }); }
 });
-const server = app.listen(0, '0.0.0.0', () => {
-  const puerto = server.address().port;
-  console.log('\n[AGENTE MULTI-IA ACTIVO]');
+app.listen(3000, '0.0.0.0', () => {
+  console.log('\n[AGENTE IA SEMANA DE LA INGENIERIA OPERATIVO EN EL PUERTO 3000]');
   setInterval(() => {
-    exec('netsh wlan set hostednetwork mode=allow ssid="Agente IA" > nul 2>&1');
+    exec('netsh wlan set hostednetwork mode=allow ssid="IA Semana de la Ingenieria" > nul 2>&1');
     exec('netsh wlan start hostednetwork > nul 2>&1');
-    console.log('[SISTEMA] Icono y antenas actualizadas autom ticamente.');
   }, 300000);
 });
