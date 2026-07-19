@@ -2,16 +2,10 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
-import { pipeline } from '@xenova/transformers';
 const app = express();
 app.use(express.json());
-let generator = null;
-async function initLocalIA() {
-  try { generator = await pipeline('text-generation', 'Xenova/Qwen1.5-0.5B-Chat'); console.log('Cerebro Local cargado.'); } catch(e){} 
-}
-initLocalIA();
 function registrarConversacion(message, respuestaIA) {
-  const logChat = `\n[${new Date().toISOString()}] Ecosistema=Arturo Engine=Local Msg=[${message}] Rsp=[${respuestaIA}]`;
+  const logChat = `\n[${new Date().toISOString()}] Ecosistema=Arturo Accion=[${respuestaIA}]`;
   fs.appendFileSync('conversaciones.log', logChat);
 }
 function actualizarInfraestructura() {
@@ -23,31 +17,36 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { message } = req.body;
     const prompt = message.toLowerCase().trim();
-    // MATRIZ DE COMANDOS DEL SISTEMA: Acciones reales dentro de tu computadora
-    if (prompt.includes('abre el block de notas') || prompt.includes('abre bloc')) {
-      exec('notepad.exe');
-      return res.json({ reply: 'Abriendo el Bloc de Notas en tu pantalla, Administrador.' });
-    }
-    if (prompt.includes('abre la calculadora')) {
-      exec('calc.exe');
-      return res.json({ reply: 'Abriendo la Calculadora del sistema.' });
+    // EXTRACTOR DINÁMICO DE ACCIONES NATIVAS: Detecta intenciones de apertura de software
+    if (prompt.startsWith('abre ')) {
+      const programa = prompt.substring(5).replace(/[^a-z0-9]/g, '');
+      let comandoEjecucion = programa;
+      // Mapeo inteligente de nombres comunes a binarios oficiales de Windows
+      if (programa === 'powerpoint' || programa === 'ppt') comandoEjecucion = 'start powerpnt';
+      else if (programa === 'word') comandoEjecucion = 'start winword';
+      else if (programa === 'excel') comandoEjecucion = 'start excel';
+      else if (programa === 'blocdenotas' || programa === 'bloc') comandoEjecucion = 'notepad.exe';
+      else if (programa === 'calculadora') comandoEjecucion = 'calc.exe';
+      else if (programa === 'chrome') comandoEjecucion = 'start chrome';
+      else comandoEjecucion = `start ${programa}`;
+      
+      exec(comandoEjecucion, (err) => {
+        if (err) {
+          return res.json({ reply: `Comando detectado pero no se encontro el binario para: ${programa}` });
+        }
+      });
+      registrarConversacion(message, `Abriendo ${programa}`);
+      return res.json({ reply: `Entendido. Ejecutando la apertura de ${programa} de forma inmediata, Administrador.` });
     }
     if (prompt.includes('status') || prompt.includes('reporte')) {
-      return res.json({ reply: 'Estatus del Ecosistema Arturo: Puertos activos, 0% RAM consumida por IA local, antena de red inalámbrica encendida y respaldos a GitHub operando cada 5 minutos.' });
+      return res.json({ reply: 'Estatus Arturo IA: 0% RAM consumida, mapeador de hardware activo y respaldos a GitHub vinculados.' });
     }
-    // PROCESAMIENTO DE TEXTO LIBRE LOCAL (Si no es un comando directo)
-    if (generator) {
-      const out = await generator(message, { max_new_tokens: 60 });
-      const respuestaLocal = out && out[0] && out[0].generated_text ? out[0].generated_text.trim() : 'Comando procesado localmente.';
-      registrarConversacion(message, respuestaLocal);
-      return res.json({ reply: respuestaLocal });
-    }
-    res.json({ reply: 'Arturo IA procesando en segundo plano de forma local.' });
+    res.json({ reply: 'Arturo IA escuchando. Di "abre" seguido del nombre de la herramienta que necesites.' });
   } catch (err) {
     res.json({ reply: 'Ecosistema Arturo Operativo.' });
   }
 });
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[ECOSISTEMA ARTURO - MOTOR HÍBRIDO ACTIVO AL 100%]');
+  console.log('\n[ECOSISTEMA ARTURO - MOTOR DE ACCIONES EN VIVO ACTIVADO]');
   setInterval(actualizarInfraestructura, 300000);
 });
