@@ -76,6 +76,6 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.use(express.static('.'));
-app.listen(3000, '0.0.0.0', () => {
+app.listen(process.env.PORT || 0, '0.0.0.0', () => {
   console.log('\n[SISTEMA - REPARADO CON COMANDOS DE HARDWARE UNIVERSALES]');
 });
