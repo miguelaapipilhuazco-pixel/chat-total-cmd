@@ -1,5 +1,6 @@
 import ollama from 'ollama';
 import express from 'express';
+import fs from 'fs';
 import { exec } from 'child_process';
 const app = express();
 app.use(express.json());
@@ -21,20 +22,22 @@ app.post('/api/chat', async (req, res) => {
       exec(`ollama pull ${message.split( ' ' ).pop()}`);
       return res.json({ reply: 'Descargando modelo en segundo plano...' });
     }
-    const contexto = [
-      { role: 'system', content: 'REGLA: Detecta el idioma del usuario y responde unicamente en ese mismo idioma.' },
-      { role: 'user', content: message }
-    ];
+    const contexto = [{ role: 'system', content: 'REGLA: Detecta el idioma del usuario y responde unicamente en ese mismo idioma.' }, { role: 'user', content: message }];
     const response = await ollama.chat({ model: modeloActual, messages: contexto });
-    res.json({ reply: response.message.content });
+    const respuestaIA = response.message.content;
+    const logChat = `\n[${new Date().toISOString()}] Rol=[${usuarioRol}] Msg=[${message}] Rsp=[${respuestaIA}]`;
+    fs.appendFileSync( 'conversaciones.log', logChat );
+    res.json({ reply: respuestaIA });
   } catch { res.status(500).json({ error: 'Error interno en el orquestador.' }); }
 });
 app.listen(3000, '0.0.0.0', () => {
   console.log('\n[AGENTE MULTI-IA EVOLUTIVO Y AUTOMATIZADO ACTIVO]');
   setInterval(() => {
+    if (fs.existsSync( 'conversaciones.log' )) {
+      exec('guardar.bat');
+    }
     exec('git pull origin main', (err, stdout) => {
       if (stdout && !stdout.includes( 'Already up to date' )) {
-        console.log('[EVOLUCION] Detectadas nuevas actualizaciones en GitHub. Aplicando cambios...');
         exec('ollama create ia-ingenieria -f ./Modelfile && taskkill /f /im node.exe && node chat-ollama.js');
       }
     });
