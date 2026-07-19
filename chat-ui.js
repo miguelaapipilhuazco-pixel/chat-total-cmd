@@ -8,13 +8,9 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   
   // VECTOR MAESTRO DE MANOS INTEGRADO: Trazos lineales limpios en blanco translúcido
   let iconBraille = '&#x2817;&#x2803;'; 
-  let iconSeñas = `<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Mano Izquierda Minimalista -->
-    <path d="M5 10V6a1.5 1.5 0 0 1 3 0v4m-3 0a1.5 1.5 0 0 0 3 0M5 10a1.5 1.5 0 0 1-3-1V8a1.5 1.5 0 0 1 3 0"/>
-    <path d="M8 9V5a1.5 1.5 0 0 1 3 0v5m-3 0a1.5 1.5 0 0 0 3 0m0 0V8a1.5 1.5 0 0 1 3 0v3a3 3 0 0 1-3 3H7.5A3.5 3.5 0 0 1 4 10.5"/>
-    <!-- Mano Derecha Balanceada Simétrica -->
-    <path d="M19 10V6a1.5 1.5 0 0 0-3 0v4m3 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0 3-1V8a1.5 1.5 0 0 0-3 0"/>
-    <path d="M16 9V5a1.5 1.5 0 0 0-3 0v5m3 0a1.5 1.5 0 0 1-3 0m0 0V8a1.5 1.5 0 0 0-3 0v3a3 3 0 0 0 3 3h3.5a3.5 3.5 0 0 0 3.5-3.5"/>
+  let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 14H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
+    <path d="M22 14h-8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
   </svg>`; 
   let iconTexto = 'Tᴛ'; 
   let iconVoz = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>`;
