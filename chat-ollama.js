@@ -17,14 +17,9 @@ function actualizarInfraestructura() {
   exec('netsh wlan set hostednetwork mode=allow ssid="IA Semana de la Ingenieria" > nul 2>&1');
   exec('netsh wlan start hostednetwork > nul 2>&1');
 }
-// INTERFAZ DE ICONO FLOTANTE MINIMALISTA COMPACTO
+// INTERFAZ PROFESIONAL CON MOTOR IONIC FRAMEWORK ADAPTATIVO
 app.get('/', (req, res) => {
-  res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>IA Flotante</title><style> body{background:#111;color:#fff;font-family:sans-serif;} #ia-widget{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;} #ia-btn{width:50px;height:50px;background:#d4af37;border:none;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;} #ia-btn:active{transform:scale(0.95);} #ia-menu{display:none;background:rgba(20,20,20,0.95);border:1px solid #d4af37;padding:8px;border-radius:12px;margin-bottom:10px;box-shadow:0 4px 15px rgba(0,0,0,0.7);width:140px;} .menu-item{width:100%;background:none;border:none;color:#fff;padding:8px;text-align:left;font-size:13px;cursor:pointer;border-radius:6px;display:flex;align-items:center;gap:8px;} .menu-item:hover{background:rgba(212,175,55,0.2);}</style></head><body><div id="ia-widget"><div id="ia-menu"><button class="menu-item" onclick="setModo('texto')">⌨️ Texto</button><button class="menu-item" onclick="setModo('microfono')">🎙️ Microfono</button><button class="menu-item" onclick="setModo('senas')">🖐️ Señas Int.</button></div><button id="ia-btn" onclick="toggleMenu()">⚛️</button></div><script>function toggleMenu(){const m=document.getElementById('ia-menu');m.style.display=m.style.display==='block'?'none':'block';} function setModo(m){fetch('/api/modo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({modo:m})}); toggleMenu();}</script></body></html>`);
-});
-app.post('/api/modo', (req, res) => {
-  const { modo } = req.body;
-  modoInteractiva = modo;
-  res.json({ status: 'Modo cambiado: ' + modoInteractiva });
+  res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>IA Multi-OS</title><script type="module" src="https://jsdelivr.net"></script><script nomodule src="https://jsdelivr.net"></script><link rel=stylesheet href="https://jsdelivr.net"/><style>body{background:#000;--ion-background-color:#000;color:#fff;} #ia-fab{position:fixed;bottom:15px;right:15px;z-index:9999;} ion-fab-button{--background:#d4af37;--color:#000;box-shadow:0 4px 12px rgba(0,0,0,0.5);}</style></head><body><ion-app><ion-content><div id="ia-fab"><ion-fab><ion-fab-button><ion-icon name="hardware-chip-outline">⚛️</ion-icon></ion-fab-button><ion-fab-list side="top"><ion-fab-button onclick="setModo('texto')" title="Texto">⌨️</ion-fab-button><ion-fab-button onclick="setModo('microfono')" title="Microfono">🎙️</ion-fab-button><ion-fab-button onclick="setModo('senas')" title="Señas">🖐️</ion-fab-button></ion-fab-list></ion-fab></div></ion-content></ion-app><script>function setModo(m){fetch('/api/modo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({modo:m})});}</script></body></html>`);
 });
 app.post('/api/chat', async (req, res) => {
   try {
@@ -40,7 +35,7 @@ app.post('/api/chat', async (req, res) => {
 });
 function iniciarServidor(puerto) {
   const server = app.listen(puerto, '0.0.0.0', () => {
-    console.log(`\n[AGENTE MULTI-IA ACTIVO - PUERTO: ${puerto}]`);
+    console.log(`\n[AGENTE MULTI-IA CON ELEMENTOS ADAPTATIVOS IONIC EN EL PUERTO: ${puerto}]`);
     setInterval(actualizarInfraestructura, 300000);
   });
   server.on('error', (err) => {
