@@ -16,7 +16,7 @@ if (fs.existsSync('config.json')) {
 let openRouterKey = process.env.OPENROUTER_KEY || '';
 
 function registrarEvolucion(prompt, accion) {
-  const logChat = `\r\n[${new Date().toISOString()}] IA_PARENT_CORE: Entrada=[${prompt}] -> Accion=[${accion}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] IA_AUTO_FIX: Entrada=[${prompt}] -> Accion=[${accion}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
@@ -35,34 +35,17 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// BUERZA DE RAZONAMIENTO CLOUD INVESTIGADORA Y DE AUTO-MUTACIÓN TOTALMENTE RESTAURADA
+// INTERCEPTOR DE AUTO-CORRECCIÓN INTELIGENTE UNIVERSAL
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
 
   try {
-    if (prompt.includes('cambia tu nombre a ') || prompt.includes('cambiate de nombre a ') || prompt.includes('ponte de nombre ')) {
-      let nuevoNombre = message.replace(/cambia tu nombre a |cambiate de nombre a |ponte de nombre /gi, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"").trim();
-      if (nuevoNombre) {
-        config.nombreIA = nuevoNombre;
-        fs.writeFileSync('config.json', JSON.stringify(config, null, 2));
-        registrarEvolucion(message, `Identidad actualizada a: ${nuevoNombre}`);
-        return res.json({ reply: `[${config.nombreIA}] Entendido. He reconfigurado mis registros. Mi nombre oficial es "${config.nombreIA}".` });
-      }
-    }
-
-    if (prompt.includes('roblox')) {
-      exec('powershell -Command "$p = Get-ChildItem -Path $env:LOCALAPPDATA\\Roblox\\Versions\\*\\RobloxPlayerLauncher.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1; if($p){ start $p.FullName } else { start roblox:// }"');
-      registrarEvolucion(prompt, 'Apertura de Roblox');
-      return res.json({ reply: `[${config.nombreIA}] Inicializando el escaneo de subprocesos nativos en tu disco duro para abrir Roblox Player de inmediato.` });
-    }
-
-    if (prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
-      const accion = prompt.startsWith('abre ') ? 'start ' : 'taskkill /f /im ';
-      const software = prompt.replace(/abre|cierra|el|la/g, '').trim();
-      const extension = prompt.startsWith('cierra ') ? '.exe' : '';
-      exec(accion + software + extension);
-      return res.json({ reply: `[${config.nombreIA}] Directiva de hardware ejecutada con éxito para: ${software}.` });
+    // CAPA INDESTRUCTIBLE DE INTELIGENCIA DE NÚCLEO: Auto-corrige lenguaje informal para novatos
+    if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('powerpoint') || prompt.includes('notas') || prompt.includes('consola') || prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
+      const { procesarComandoInformal } = await import('./chat-hardware.js');
+      const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
+      return res.json({ reply: respuestaAutoCorregida });
     }
 
     if (openRouterKey) {
@@ -72,31 +55,20 @@ app.post('/api/chat', async (req, res) => {
         body: JSON.stringify({
           model: 'meta-llama/llama-3.2-3b-instruct:free',
           messages: [
-            { role: 'system', content: `Eres ${config.nombreIA}, una Inteligencia Artificial inyectada como administradora autónoma del sistema. Puedes procesar cualquier petición libre, modificar tu código o interactuar con el sistema. Responde de forma muy fluida, extensa y en español.` },
+            { role: 'system', content: `Eres ${config.nombreIA}, una Inteligencia Artificial administradora del sistema. Responde con fluidez y en español.` },
             { role: 'user', content: message }
           ]
         })
       });
-
       const data = await apiRes.json();
-      const respuestaDeducida = (data && data.choices) ? data.choices.message.content.trim() : '';
-
-      if (respuestaDeducida) {
-        if (prompt.includes('modifícate') || prompt.includes('cambia tu código') || prompt.includes('actualízate')) {
-          fs.appendFileSync('chat.js', `\n\n// EVOLUCIÓN AUTOMÁTICA:\n// Lógica asimilada para la orden: ${message}`);
-          setTimeout(() => { exec('taskkill /f /im node.exe > nul 2>&1 && start /b node chat.js'); }, 1000);
-        }
-        registrarEvolucion(message, 'Respuesta dinámica libre generada con éxito');
-        return res.json({ reply: respuestaDeducida });
-      }
+      return res.json({ reply: data.choices.message.content.trim() });
     }
-    throw new Error('Fallback local activo');
-
+    throw new Error();
   } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] Intercepté tu orden libre: "${message}". Mis canales de auto-configuración y razonamiento en segundo plano se encuentran activos analizando tu sistema de forma automática.` });
+    res.json({ reply: `[${config.nombreIA}] Procesando directiva en mi capa adaptativa local de forma autónoma.` });
   }
 });
 
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[NÚCLEO MAESTRO RESTAURADO - PADRE Y ENJAMBRE DE HIJOS ONLINE]');
+  console.log('\n[SISTEMA - MOTOR DE AUTO-CORRECCIÓN DE HARDWARE ONLINE]');
 });
