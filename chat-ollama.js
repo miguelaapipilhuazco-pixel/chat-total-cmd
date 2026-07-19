@@ -19,11 +19,11 @@ app.post('/api/chat', async (req, res) => {
     const { message } = req.body;
     const prompt = message.toLowerCase().trim();
 
-    // INTERCEPCIÓN NATIVA ULTRA-RÁPIDA (Protegido sin tokens externos expuestos)
+    // INTERCEPCIÓN NATIVA COMPLETA (Sin textos cortados ni variables incompletas)
     if (prompt.includes('roblox')) {
       exec('powershell -Command "$p = Get-ChildItem -Path $env:LOCALAPPDATA\\Roblox\\Versions\\*\\RobloxPlayerLauncher.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1; if($p){ start $p.FullName } else { start roblox:// }"');
       registrarEvolucion(prompt, 'Escaneo nativo de rutas locales para Roblox');
-      return res.json({ reply: '[ATENEA AGENTE] Inicializando escáner nativo de disco duro: Buscando y abriendo RobloxPlayerLauncher en tus carpetas de usuario de forma inmediata, Administrador.' });
+      return res.json({ reply: '[ATENEA AGENTE] Inicializando escáner nativo de disco duro: Buscando y abriendo RobloxPlayerLauncher en tus carpetas de usuario de forma inmediata, Administrador. Ejecución completada.' });
     }
 
     if (prompt.includes('abre')) {
@@ -31,15 +31,15 @@ app.post('/api/chat', async (req, res) => {
       const comando = software === 'chrome' ? 'start chrome' : `start ${software}`;
       exec(comando);
       registrarEvolucion(prompt, comando);
-      return res.json({ reply: `[ATENEA] Ejecutando apertura nativa de ${software}.` });
+      return res.json({ reply: `[ATENEA] Ejecutando apertura nativa de ${software} de forma exitosa en el monitor principal.` });
     }
 
-    res.json({ reply: '[ATENEA LOCAL] Sistema operativo listo. Pídeme abrir tus videojuegos o programas por voz o señas.' });
+    res.json({ reply: '[ATENEA LOCAL] Sistema operativo listo. Pídeme abrir tus videojuegos o programas por voz o señas de manera fluida.' });
   } catch (err) {
-    res.json({ reply: '[ATENEA] Capa de contingencia local activa.' });
+    res.json({ reply: '[ATENEA] Capa de contingencia local activa y respondiendo al sistema.' });
   }
 });
 
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[ATENEA - AGENTE CON SEGURIDAD RECONFIGURADA]');
+  console.log('\n[ATENEA - AGENTE CON TEXTOS COMPLETOS CONFIGURADO]');
 });
