@@ -44,3 +44,4 @@
 [2026-07-19T20:56:54.858Z] IA_5_LEVELS: Entrada=[abre word] -> Accion=[Apertura ML: winword]
 [2026-07-19T21:06:12.213Z] IA_LOCAL_COGNITIVE: Entrada=[puedes entenderme?] -> Accion=[Inferencia analitica local completada]
 [2026-07-19T22:18:18.023Z] IA_LOCAL_COGNITIVE: Entrada=[puedes entenderme?] -> Accion=[Inferencia analitica local completada]
+[2026-07-19T22:23:26.767Z] IA_OLLAMA_SUPER: Entrada=[hola, me puedes entender?] -> Accion=[Respuesta enrutada mediante la clase chat-ollama.js]
