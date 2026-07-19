@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 function createOverlayWindow () {
   const win = new BrowserWindow({
-    width: 320, height: 320,
+    width: 400, height: 400,
     transparent: true, frame: false,
     alwaysOnTop: true, resizable: false, hasShadow: false,
     webPreferences: { nodeIntegration: false }
