@@ -8,9 +8,9 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   
   let iconBraille = '&#x2817;&#x2803;'; 
   
-  // Icono 2: Vector propio de Mano Extendida de Alta Calidad (Cinco dedos abiertos)
+  // VECTOR ANATÓMICO CORREGIDO: Mano extendida real de 5 dedos estilizados (Sin deformaciones centrales)
   let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <path d="M12 1a1 1 0 0 0-1 1v6.5a.5.5 0 0 1-1 0V2.5a1 1 0 0 0-2 0V9a.5.5 0 0 1-1 0V4.5a1 1 0 0 0-2 0V11a.5.5 0 0 1-1 0V7a1 1 0 0 0-2 0v5.5A7.5 7.5 0 0 0 10.5 20h3A6.5 6.5 0 0 0 20 13.5V7.5a1 1 0 0 0-2 0v3.5a.5.5 0 0 1-1 0V4a1 1 0 0 0-2 0v4.5a.5.5 0 0 1-1 0V2a1 1 0 0 0-1-1z"/>
+    <path d="M12 2a1 1 0 0 0-1 1v6.5a.5.5 0 0 1-1 0V3.5a1 1 0 0 0-2 0V9a.5.5 0 0 1-1 0V5a1 1 0 0 0-2 0v6.5a.5.5 0 0 1-1 0V8.5a1 1 0 0 0-2 0v5a7 7 0 0 0 7 7h2.5a6.5 6.5 0 0 0 6.5-6.5V7.5a1 1 0 0 0-2 0v3a.5.5 0 0 1-1 0V5a1 1 0 0 0-2 0v5.5a.5.5 0 0 1-1 0V3a1 1 0 0 0-1-1z"/>
   </svg>`; 
   
   let iconTexto = 'Tᴛ'; 
@@ -54,7 +54,7 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       
       .icon-btn { 
         -webkit-app-region: no-drag !important; 
-        transition: transform 0.2s ease, filter 0.2s, color 0.2s; 
+        transition: transform 0.2s ease, filter 0.2s; 
         cursor: pointer; display: flex; items: center; justify-content: center; 
         border: none !important; background: transparent !important; box-shadow: none !important;
         width: 36px; height: 36px; 
