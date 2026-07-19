@@ -11,18 +11,24 @@ if (fs.existsSync('config.json')) {
 let openRouterKey = process.env.OPENROUTER_KEY || '';
 app.get('/', (req, res) => {
   const userAgent = req.headers['user-agent'] ? req.headers['user-agent'].toLowerCase() : '';
+  // SISTEMA POLIMÓRFICO DE COLOR: El color de fondo se adapta dinámicamente al color del sistema operativo
   let radioBordes = '40px';
-  let colorFondo = 'rgba(24, 24, 27, 0.95)';
-  if (userAgent.includes('android') || userAgent.includes('watch')) {
-    radioBordes = '50px'; colorFondo = 'rgba(10, 10, 10, 0.98)';
+  let colorFondo = 'rgba(32, 32, 32, 0.85)'; /* Windows 11 Mica default */
+  let efectoBlur = 'backdrop-filter: blur(25px);-webkit-backdrop-filter: blur(25px);';
+  let estiloBorder = '1px solid rgba(255, 255, 255, 0.12)';
+  if (userAgent.includes('android') || userAgent.includes('linux')) {
+    radioBordes = '50px'; colorFondo = 'rgba(10, 10, 10, 0.98)'; efectoBlur = ''; estiloBorder = '1px solid rgba(255, 255, 255, 0.05)';
   } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
-    radioBordes = '30px'; colorFondo = 'rgba(28, 28, 30, 0.9)';
+    radioBordes = '30px'; colorFondo = 'rgba(28, 28, 30, 0.9)'; efectoBlur = 'backdrop-filter: blur(20px);-webkit-backdrop-filter: blur(20px);'; estiloBorder = '1px solid rgba(255, 255, 255, 0.1)';
+  } else if (userAgent.includes('macintosh') || userAgent.includes('mac os')) {
+    radioBordes = '35px'; colorFondo = 'rgba(40, 40, 40, 0.65)'; efectoBlur = 'backdrop-filter: blur(35px);-webkit-backdrop-filter: blur(35px);'; estiloBorder = '1px solid rgba(255, 255, 255, 0.2)';
   }
-  res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Uriel Proportional</title><style>body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, sans-serif; -webkit-app-region: drag; width: 100vw; height: 100vh; display: flex; items: center; justify-content: center; } .icon-btn { -webkit-app-region: no-drag; transition: all 0.2s ease-in-out; cursor: grab; display: flex; items: center; justify-content: center; } .icon-btn:hover { transform: scale(1.15); filter: brightness(1.3); } .icon-btn:active { cursor: grabbing; }
+  res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Uriel PolyOS</title><style>body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, sans-serif; -webkit-app-region: drag; width: 100vw; height: 100vh; display: flex; items: center; justify-content: center; } .icon-btn { -webkit-app-region: no-drag; transition: all 0.2s ease-in-out; cursor: grab; display: flex; items: center; justify-content: center; } .icon-btn:hover { transform: scale(1.15); filter: brightness(1.3); } .icon-btn:active { cursor: grabbing; }
   .capsula-compacta {
     width: 140px; height: 210px;
     background-color: ${colorFondo};
-    border: 2px solid rgba(82, 82, 91, 0.4);
+    ${efectoBlur}
+    border: ${estiloBorder};
     border-radius: ${radioBordes};
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
     display: flex; flex-direction: column; items: center; justify-content: space-between;
@@ -32,10 +38,10 @@ app.get('/', (req, res) => {
   .braille-ico { color: #f59e0b; font-size: 32px; font-weight: bold; line-height: 1; height: 32px; }
   .señas-ico { font-size: 26px; width: 36px; height: 36px; }
   .texto-ico { font-size: 26px; font-weight: 900; font-family: serif; color: #f4f4f5; letter-spacing: -1px; width: 36px; height: 36px; }
-  .flecha-ico { font-size: 14px; font-weight: 900; color: #52525b; transition: color 0.2s; width: 20px; height: 20px; }
+  .flecha-ico { font-size: 14px; font-weight: 900; color: #71717a; transition: color 0.2s; width: 20px; height: 20px; }
   .flecha-ico:hover { color: #f59e0b; }
   .voz-ico { font-size: 26px; color: #f4f4f5; height: 36px; }
-  .logo-circulo { width: 85px; height: 80px; background-color: rgba(9, 9, 11, 0.95); border: 2px solid rgba(245, 158, 11, 0.5); border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 10px; box-sizing: border-box; }
+  .logo-circulo { width: 85px; height: 85px; background-color: ${colorFondo}; ${efectoBlur} border: ${estiloBorder}; border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 10px; box-sizing: border-box; }
   .logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
   </style><script>function mutar(m){ const e=document.getElementById('modo-ext'); const c=document.getElementById('modo-com'); if(m==='cerrar'){ e.style.setProperty('display','none','important'); c.style.setProperty('display','flex','important'); }else{ e.style.setProperty('display','flex','important'); c.style.setProperty('display','none','important'); } }</script></head><body>
   <div id="modo-ext" class="capsula-compacta" style="display: flex;">
