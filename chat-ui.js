@@ -74,7 +74,19 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       .icon-btn:hover { transform: scale(1.15); filter: brightness(1.4) !important; }
       .icon-btn:active { transform: scale(0.92); }
       
-      .punto-ico { font-size: 28px; color: rgba(255, 255, 255, 0.5); line-height: 1; -webkit-app-region: no-drag; cursor: pointer; display: flex; items: center; justify-content: center; width: 24px; height: 24px; }
+            .punto-ico { 
+        font-size: 28px; 
+        color: rgba(255, 255, 255, 0.5); 
+        line-height: 1; 
+        -webkit-app-region: no-drag; 
+        cursor: pointer; 
+        display: flex; 
+        items-center: center; 
+        justify-content: center; 
+        width: 24px; 
+        height: 24px; 
+        margin-top: -6px; /* Desplazamiento exacto para fijarlo en el centro matemático */
+      }
       .punto-ico:hover { color: rgba(255, 255, 255, 0.9); }
       
       .logo-circulo { -webkit-app-region: no-drag !important; width: 85px; height: 85px; background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 10px; box-sizing: border-box; z-index: 20; }
