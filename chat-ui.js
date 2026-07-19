@@ -9,8 +9,8 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   let iconBraille = '&#x2817;&#x2803;'; 
   
   // Icono 2: Vector propio de Mano Extendida de Alta Calidad (Cinco dedos abiertos)
-  let iconSeñas = `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
-    <path d="M12 2a1 1 0 0 1 1 1v6.5h.5a1 1 0 0 1 1 1V5a1 1 0 0 1 2 0v5.5h.5a1 1 0 0 1 1 1V6.5a1 1 0 0 1 2 0v5.5H20a1 1 0 0 1 1 1v2a6 6 0 0 1-6 6h-3a6 6 0 0 1-6-6V9a1 1 0 0 1 2 0v2.5h.5V4.5a1 1 0 0 1 2 0V11h.5V3a1 1 0 0 1 1-1z"/>
+  let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+    <path d="M12 1a1 1 0 0 0-1 1v6.5a.5.5 0 0 1-1 0V2.5a1 1 0 0 0-2 0V9a.5.5 0 0 1-1 0V4.5a1 1 0 0 0-2 0V11a.5.5 0 0 1-1 0V7a1 1 0 0 0-2 0v5.5A7.5 7.5 0 0 0 10.5 20h3A6.5 6.5 0 0 0 20 13.5V7.5a1 1 0 0 0-2 0v3.5a.5.5 0 0 1-1 0V4a1 1 0 0 0-2 0v4.5a.5.5 0 0 1-1 0V2a1 1 0 0 0-1-1z"/>
   </svg>`; 
   
   let iconTexto = 'Tᴛ'; 
