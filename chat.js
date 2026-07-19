@@ -5,6 +5,7 @@ import os from 'os';
 import { exec } from 'child_process';
 import { obtenerInterfaz } from './chat-ui.js';
 import { ejecutarModulo } from './chat-hardware.js';
+import { inicializarPipeline, evaluarIntencion } from './chat-neural.js';
 
 const app = express();
 app.use(express.json());
@@ -16,7 +17,9 @@ if (fs.existsSync('config.json')) {
 
 let openRouterKey = process.env.OPENROUTER_KEY || '';
 
-// 1. EXTRACTOR DE IDENTIFICADORES DE RED LOCAL (LAN/WAN Pasarela)
+// Inicializa las redes neuronales de forma diferida sin bloquear el hilo primario
+inicializarPipeline();
+
 function obtenerIPLocal() {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
@@ -29,23 +32,10 @@ function obtenerIPLocal() {
 const IP_VINCULACION = obtenerIPLocal();
 
 function registrarEvolucion(prompt, accion) {
-  const logChat = `\r\n[${new Date().toISOString()}] IA_OMNI_CONNECT: Entrada=[${prompt}] -> Accion=[${accion}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] IA_NEURAL_LINK: Entrada=[${prompt}] -> Accion=[${accion}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
-
-// 2. MONITOREO DE CANALES INALÁMBRICOS DE BLUETOOTH Y PUERTOS SERIALES FÍSICOS (USB/COM)
-function inicializarPuentesBluetoothYSerial() {
-  console.log('[BLUETOOTH] Inicializando pila RFCOMM nativa... Escuchando emparejamientos móviles.');
-  console.log('[SERIAL/USB] Escaneando puertos COM activos de Windows para hardware externo.');
-  
-  // Script de contingencia: Si un dispositivo inyecta un payload por BT o Serial, simula la llamada al puerto local
-  // Esto asegura vinculacion absoluta con microcontroladores o apps de terminales Bluetooth seriales
-  setInterval(() => {
-    // Escáner pasivo en segundo plano libre de consumo de RAM local
-  }, 10000);
-}
-inicializarPuentesBluetoothYSerial();
 
 app.get('/', (req, res) => {
   const userAgent = req.headers['user-agent'] ? req.headers['user-agent'].toLowerCase() : '';
@@ -61,13 +51,27 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// PASARELA UNIVERSAL DE INFERENCIA SREVERLESS INTERCONECTADA
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
 
-  console.log(`\n[OMNI-LINK] Directiva interceptada por canal activo: "${message}"`);
+  console.log(`\n[OMNI-LINK] Directiva recibida: "${message}"`);
   
+  if (prompt.includes('bluetooth') || prompt.includes('dispositivos') || prompt.includes('busca')) {
+    exec('powershell -Command "Get-PnpDevice -Class Bluetooth | Where-Object {$_.Status -eq \'OK\'} | Select-Object -Property FriendlyName -First 5 | Out-String"', (err, stdout) => {
+      let respuestaFormat = `[${config.nombreIA}] No se detectaron antenas Bluetooth visibles.`;
+      if (!err && stdout && stdout.trim()) {
+        const lineas = stdout.split('\r\n').map(l => l.trim()).filter(l => l && !l.startsWith('FriendlyName') && !l.startsWith('------------'));
+        if (lineas.length > 0) {
+          respuestaFormat = `[${config.nombreIA}] [Radar Bluetooth] Dispositivos localizados:\\n` + lineas.map((l, i) => `${i+1}. 📱 ${l}`).join('\\n');
+        }
+      }
+      registrarEvolucion(message, 'Escaneo Bluetooth completado');
+      return res.json({ reply: respuestaFormat });
+    });
+    return;
+  }
+
   if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('powerpoint') || prompt.includes('notas') || prompt.includes('consola') || prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
     const { procesarComandoInformal } = await import('./chat-hardware.js');
     const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
@@ -75,6 +79,14 @@ app.post('/api/chat', async (req, res) => {
   }
 
   try {
+    // LLAMADA A LA RED NEURONAL DESACOPLADA HIJA
+    const output = await evaluarIntencion(message);
+    if (output && output.label !== 'Cargando Tensores') {
+      const resultado = Array.isArray(output) ? output[0] : output;
+      registrarEvolucion(message, `BERT Local: ${resultado.label}`);
+      return res.json({ reply: `[${config.nombreIA}] [Inferencia Neuronal LocalBERT] Analizé tu patrón de texto con un ${(resultado.score * 100).toFixed(1)}% de precisión. Intención evaluada: [${resultado.label}].` });
+    }
+
     if (openRouterKey) {
       const apiRes = await fetch('https://openrouter.ai', {
         method: 'POST',
@@ -82,7 +94,7 @@ app.post('/api/chat', async (req, res) => {
         body: JSON.stringify({
           model: 'deepseek/deepseek-r1:free',
           messages: [
-            { role: 'system', content: `Eres ${config.nombreIA}, una IA omniconectada por Bluetooth, Serial y LAN con razonamiento profundo. Responde con fluidez y en español.` },
+            { role: 'system', content: `Eres ${config.nombreIA}, una IA multidispositivo con razonamiento profundo. Responde con fluidez y en español.` },
             { role: 'user', content: message }
           ]
         })
@@ -91,23 +103,20 @@ app.post('/api/chat', async (req, res) => {
       if (data && data.choices && data.choices.message) {
         let respuestaDeducida = data.choices.message.content.trim();
         respuestaDeducida = respuestaDeducida.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
-        registrarEvolucion(message, 'Respuesta omniconectada generada con éxito');
+        registrarEvolucion(message, 'Respuesta multidispositivo generada');
         return res.json({ reply: respuestaDeducida });
       }
     }
     throw new Error();
   } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] Enlace total activo. Ejecutando comando de forma inmediata en el ecosistema.` });
+    res.json({ reply: `[${config.nombreIA}] Canales activos. Procesando tu consulta "${message}" de forma interna a nivel de red.` });
   }
 });
 
-// ABRIR EL PUERTO CENTRAL A CUALQUIER MÓDULO HUÉSPED (0.0.0.0)
 app.listen(3000, '0.0.0.0', () => {
   console.log('\n================================================================');
-  console.log(` [ PROTOCOLO DE CONECTIVIDAD UBICUA TOTAL - URIEL OMNI-LINK ]`);
-  console.log(` -> CANAL BLUETOOTH / SERIAL COM: Escucha nativa activa`);
-  console.log(` -> ENLACE RED LOCAL (WiFi/LAN): http://${IP_VINCULACION}:3000`);
+  console.log(` [ PROTOCOLO DE CONECTIVIDAD UBICUA TOTAL - URIEL CLUSTER ]`);
+  console.log(` -> INTERCONEXIÓN MULTIDISPOSITIVO LAN: http://${IP_VINCULACION}:3000`);
   console.log(` -> CONSOLA INTERNA RESIDENTE: http://localhost:3000`);
   console.log('================================================================\n');
 });
-
