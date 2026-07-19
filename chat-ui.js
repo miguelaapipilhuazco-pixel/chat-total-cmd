@@ -25,29 +25,30 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
     <style>
       body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; width: 100vw; height: 100vh; display: flex; flex-direction: column; items: center; justify-content: flex-start; padding-top: 15px; box-sizing: border-box; }
       
+      /* CÁPSULA EN CRUZ SIN SOMBRA */
       .capsula-cruz {
         -webkit-app-region: drag !important; width: 112px; height: 112px;
         background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%;
         display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-        align-items: center; justify-items: center; padding: 4px; box-sizing: border-box; cursor: move; box-shadow: none !important; margin-bottom: 5px;
+        align-items: center; justify-items: center; padding: 4px; box-sizing: border-box; cursor: move; 
+        box-shadow: none !important; margin-bottom: 5px;
       }
       .icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
       .icon-btn { -webkit-app-region: no-drag !important; transition: transform 0.2s ease; cursor: pointer; display: flex; items: center; justify-content: center; border: none !important; background: transparent !important; box-shadow: none !important; filter: none !important; width: 30px; height: 36px; fill: rgba(255, 255, 255, 0.7) !important; color: rgba(255, 255, 255, 0.7) !important; }
       .icon-btn:hover { transform: scale(1.15); fill: rgba(255, 255, 255, 1) !important; color: rgba(255, 255, 255, 1) !important; }
       .punto-ico { font-size: 26px; color: rgba(255, 255, 255, 0.5); line-height: 1; -webkit-app-region: no-drag !important; cursor: pointer; display: flex; items: center; justify-content: center; width: 24px; height: 24px; margin-top: -6px; }
       
-      /* CONTENEDOR MULTIMEDIA CORREGIDO CON MARGENES INTERNOS AMPLIADOS */
-      .panel-multimedia { display: none; -webkit-app-region: no-drag !important; width: 265px; background-color: ${colorOscuroNativo}; ${blurNativo} border: ${bordeNativo}; border-radius: 24px; padding: 14px; color: white; margin-top: 10px; box-sizing: border-box; flex-direction: column; gap: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-      .panel-header { font-size: 10px; font-weight: bold; color: #a1a1aa; border-bottom: 1px solid #27272a; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-      .chat-box-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; max-height: 105px; min-height: 105px; }
-      .chat-ia-text { font-size: 12px; font-family: monospace; color: #a1a1aa; }
-      .chat-user-text { font-size: 12px; color: #f59e0b; text-align: right; font-weight: 500; }
+      /* PANALES MULTIMEDIA SIN SOMBRA Y CON TIPOGRAFÍA COMPARTIDA HOMOLOGADA */
+      .panel-multimedia { display: none; -webkit-app-region: no-drag !important; width: 265px; background-color: ${colorOscuroNativo}; ${blurNativo} border: ${bordeNativo}; border-radius: 24px; padding: 14px; color: white; margin-top: 10px; box-sizing: border-box; flex-direction: column; gap: 8px; box-shadow: none !important; font-family: system-ui, -apple-system, sans-serif; }
+      .panel-header { font-size: 10px; font-weight: bold; color: #a1a1aa; border-bottom: 1px solid #27272a; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; font-family: system-ui, sans-serif; }
+      .chat-box-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; max-height: 105px; min-height: 105px; font-family: system-ui, sans-serif; }
+      .chat-ia-text { font-size: 12px; color: #a1a1aa; font-family: system-ui, sans-serif; }
+      .chat-user-text { font-size: 12px; color: #f59e0b; text-align: right; font-weight: 500; font-family: system-ui, sans-serif; }
       .chat-input-row { display: flex; gap: 4px; border-top: 1px solid #27272a; padding-top: 6px; }
-      .chat-field { flex: 1; background: rgba(9,9,11,0.6); border: 1px solid #27272a; border-radius: 8px; padding: 4px 8px; font-size: 12px; color: white; outline: none; }
-      .chat-btn { background: #27272a; border-radius: 8px; color: white; border: none; padding: 4px 10px; font-size: 12px; cursor: pointer; font-weight: bold; }
+      .chat-field { flex: 1; background: rgba(9,9,11,0.6); border: 1px solid #27272a; border-radius: 8px; padding: 4px 8px; font-size: 12px; color: white; outline: none; font-family: system-ui, sans-serif; }
+      .chat-btn { background: #27272a; border-radius: 8px; color: white; border: none; padding: 4px 10px; font-size: 12px; cursor: pointer; font-weight: bold; font-family: system-ui, sans-serif; }
       
-      /* PANEL DE TRANSMISIÓN DEL AVATAR CORREGIDO CON ALTURA FIJA ESTABLE */
-      .avatar-stream-area { flex: 1; background: rgba(9,9,11,0.8); border-radius: 16px; border: 1px solid rgba(39,39,42,0.5); display: flex; flex-direction: column; items: center; justify-content: center; padding: 6px; text-align: center; gap: 4px; min-height: 165px; height: 165px; position: relative; }
+      .avatar-stream-area { flex: 1; background: rgba(9,9,11,0.8); border-radius: 16px; border: 1px solid rgba(39,39,42,0.5); display: flex; flex-direction: column; items: center; justify-content: center; padding: 6px; text-align: center; gap: 4px; min-height: 165px; height: 165px; position: relative; box-shadow: none !important; }
       
       .active-mic { animation: pulse-red 1.5s infinite; color: #ef4444 !important; }
       @keyframes pulse-red { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; color: #f87171; } 100% { transform: scale(1); opacity: 0.5; } }
@@ -68,7 +69,6 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
           chat.style.display = 'flex';
         } else if(modulo === 'señas') {
           camara.style.display = 'flex';
-          // Esperar un instante para asegurar que el canvas HTML este montado en la RAM
           setTimeout(() => { if(window.inicializarAvatar3D) window.inicializarAvatar3D(); }, 60);
         } else if(modulo === 'voz') {
           punto.classList.add('active-mic'); punto.innerText = '🎙';
