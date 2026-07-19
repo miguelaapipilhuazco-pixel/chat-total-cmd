@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
  if(!Recognition){ box.innerText='Navegador no compatible.'; return; }
  const rec = new Recognition(); rec.lang='es-MX'; box.innerText='🎙️ Escuchando canal Administrador...'; rec.start();
  rec.onresult=(e)=>{
-   const texto=e.results[0][0].transcript;
+   const texto=e.results.transcript;
    box.innerText='Procesando en clúster...';
    fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:texto,rol:'administrador'})}).then(r=>r.json()).then(d=>box.innerText=d.reply);
  };
