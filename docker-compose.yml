@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  ceph:
+    image: ceph/daemon
+    environment:
+      - CEPH_DEMO=1
+  minio:
+    image: minio/minio
+    depends_on:
+      - ceph
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+  lakefs:
+    image: treeverse/lakefs
+    depends_on:
+      - minio
+    ports:
+      - "8000:8000"
