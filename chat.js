@@ -79,3 +79,6 @@ app.use(express.static('.'));
 app.listen(process.env.PORT || 0, '0.0.0.0', () => {
   console.log('\n[SISTEMA - REPARADO CON COMANDOS DE HARDWARE UNIVERSALES]');
 });
+
+
+// YOLOv11_Engine: Infraestructura preparada para el trackeo de senas internacional serverless.
