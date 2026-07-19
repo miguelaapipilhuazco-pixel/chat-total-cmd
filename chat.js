@@ -35,13 +35,13 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// INTERCEPTOR DE AUTO-CORRECCIÓN INTELIGENTE REPARADO
+// INTERCEPTOR DE AUTO-CORRECCIÓN INTELIGENTE REPARADO SÓLIDO
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
 
   try {
-    // CAPA INDESTRUCTIBLE DE INTELIGENCIA DE NÚCLEO: Auto-corrige lenguaje informal para novatos
+    // CAPA DE INTELIGENCIA DE FRONTEND: Intercepta términos informales (Word, Excel, Notas)
     if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('powerpoint') || prompt.includes('notas') || prompt.includes('consola') || prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
       const { procesarComandoInformal } = await import('./chat-hardware.js');
       const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
@@ -55,7 +55,7 @@ app.post('/api/chat', async (req, res) => {
         body: JSON.stringify({
           model: 'meta-llama/llama-3.2-3b-instruct:free',
           messages: [
-            { role: 'system', content: `Eres ${config.nombreIA}, una Inteligencia Artificial administradora del sistema. Responde con fluidez y en español.` },
+            { role: 'system', content: `Eres ${config.nombreIA}, una Inteligencia Artificial administradora del sistema. Responde con fluidez, extensión y en español.` },
             { role: 'user', content: message }
           ]
         })
@@ -65,11 +65,12 @@ app.post('/api/chat', async (req, res) => {
     }
     throw new Error();
   } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] Procesando directiva en mi capa adaptativa local de forma autónoma.` });
+    res.json({ reply: `[${config.nombreIA}] Intercepté tu orden: "${message}". Procesando directiva en la capa adaptativa local de forma autónoma.` });
   }
 });
 
 app.listen(3000, '0.0.0.0', () => {
   console.log('\n[SISTEMA - MOTOR DE AUTO-CORRECCIÓN DE HARDWARE ONLINE]');
 });
+
 
