@@ -35,3 +35,4 @@
 [2026-07-19T20:01:44.914Z] IA_REASONING_ENGINE: Entrada=[cierra word] -> Accion=[Cierre forzado: winword]
 [2026-07-19T20:05:55.574Z] IA_OMNI_CONNECT: Entrada=[Click en Braille] -> Accion=[Acceso al Repositorio Remoto]
 [2026-07-19T20:11:02.297Z] IA_OMNI_CONNECT: Entrada=[abre youtube] -> Accion=[Apertura ejecutada: youtube]
+[2026-07-19T20:12:19.656Z] IA_OMNI_CONNECT: Entrada=[abre excel] -> Accion=[Apertura ejecutada: exc]
