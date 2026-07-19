@@ -35,7 +35,7 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// INTERCEPTOR DE AUTO-CORRECCIÓN INTELIGENTE UNIVERSAL
+// INTERCEPTOR DE AUTO-CORRECCIÓN INTELIGENTE REPARADO
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
@@ -72,3 +72,4 @@ app.post('/api/chat', async (req, res) => {
 app.listen(3000, '0.0.0.0', () => {
   console.log('\n[SISTEMA - MOTOR DE AUTO-CORRECCIÓN DE HARDWARE ONLINE]');
 });
+
