@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+
 function createOverlayWindow () {
   const win = new BrowserWindow({
     width: 260, height: 260,
@@ -9,3 +10,4 @@ function createOverlayWindow () {
   win.loadURL('http://localhost:3000');
 }
 app.whenReady().then(createOverlayWindow);
+
