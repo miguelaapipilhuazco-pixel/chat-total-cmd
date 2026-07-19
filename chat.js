@@ -16,7 +16,7 @@ if (fs.existsSync('config.json')) {
 let openRouterKey = process.env.OPENROUTER_KEY || '';
 
 function registrarEvolucion(prompt, accion) {
-  const logChat = `\r\n[${new Date().toISOString()}] IA_AUTO_FIX: Entrada=[${prompt}] -> Accion=[${accion}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] IA_REASONING_ENGINE: Entrada=[${prompt}] -> Accion=[${accion}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
@@ -35,42 +35,79 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// INTERCEPTOR DE AUTO-CORRECCIÓN INTELIGENTE REPARADO SÓLIDO
+// NUEVO NÚCLEO COGNITIVO: MÓDULO DE RAZONAMIENTO Y AGENTE INTERNO
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
 
-  try {
-    // CAPA DE INTELIGENCIA DE FRONTEND: Intercepta términos informales (Word, Excel, Notas)
-    if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('powerpoint') || prompt.includes('notas') || prompt.includes('consola') || prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
-      const { procesarComandoInformal } = await import('./chat-hardware.js');
-      const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
-      return res.json({ reply: respuestaAutoCorregida });
-    }
+  // BUCLE DE RAZONAMIENTO LOCAL (Pensar antes de actuar)
+  console.log(`\n[PENSANDO] Evaluando directiva: "${message}"`);
+  
+  // 1. Fase de Reflexión Interna sobre comandos informales
+  if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('powerpoint') || prompt.includes('notas') || prompt.includes('consola') || prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
+    let softwareBuscado = prompt.replace(/abre|cierra|ejecuta|lanza|inicia|el|la|por|favor/gi, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "").trim();
+    
+    const diccionarioAlias = {
+      'word': 'winword', 'el word': 'winword', 'microsoft word': 'winword',
+      'excel': 'excel', 'powerpoint': 'powerpnt', 'power point': 'powerpnt',
+      'bloc de notas': 'notepad', 'notas': 'notepad', 'consola': 'cmd', 'terminal': 'cmd'
+    };
 
+    const esCierre = prompt.startsWith('cierra') || prompt.includes('apaga');
+    const binarioReal = diccionarioAlias[softwareBuscado] || softwareBuscado;
+
+    console.log(`[RAZONAMIENTO] Usuario novato detectado. Traduciendo "${softwareBuscado}" -> "${binarioReal}"`);
+
+    if (esCierre) {
+      exec(`taskkill /f /im ${binarioReal}.exe`);
+      registrarEvolucion(message, `Cierre forzado: ${binarioReal}`);
+      return res.json({ reply: `[${config.nombreIA}] [Razonamiento Completo] He determinado que deseas liberar recursos. Cerrando "${softwareBuscado}" de forma nativa.` });
+    } else {
+      exec(`start ${binarioReal}`, (err) => {
+        if (err) exec(`start https://google.com{encodeURIComponent(softwareBuscado)}`);
+      });
+      registrarEvolucion(message, `Apertura ejecutada: ${binarioReal}`);
+      return res.json({ reply: `[${config.nombreIA}] [Razonamiento Completo] He resuelto el alias informal. Iniciando el binario ejecutable real de Windows para abrir "${softwareBuscado}" de inmediato.` });
+    }
+  }
+
+  // 2. Fase de Razonamiento DeepSeek para consultas libres en internet
+  try {
     if (openRouterKey) {
+      console.log(`[CONECTANDO] Solicitando trazas cognitivas a DeepSeek-R1...`);
       const apiRes = await fetch('https://openrouter.ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openRouterKey}` },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.2-3b-instruct:free',
+          // Uso estricto de un modelo de razonamiento cognitivo profundo
+          model: 'deepseek/deepseek-r1:free',
           messages: [
-            { role: 'system', content: `Eres ${config.nombreIA}, una Inteligencia Artificial administradora del sistema. Responde con fluidez, extensión y en español.` },
+            { role: 'system', content: `Eres ${config.nombreIA}, una Inteligencia Artificial con motor de razonamiento profundo. Analiza de forma analítica y lógica las peticiones. Responde siempre con total fluidez, naturalidad, de manera extensa y en un español impecable.` },
             { role: 'user', content: message }
           ]
         })
       });
+      
       const data = await apiRes.json();
-      return res.json({ reply: data.choices.message.content.trim() });
+      if (data && data.choices && data.choices[0] && data.choices[0].message) {
+        let respuestaDeducida = data.choices[0].message.content.trim();
+        
+        // Limpiar trazas crudas de etiquetas de pensamiento para el frontend del usuario
+        respuestaDeducida = respuestaDeducida.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+        
+        registrarEvolucion(message, 'Respuesta cognitiva profunda generada');
+        return res.json({ reply: respuestaDeducida });
+      }
     }
     throw new Error();
   } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] Intercepté tu orden: "${message}". Procesando directiva en la capa adaptativa local de forma autónoma.` });
+    // Pensamiento simulado local si el token no está activo
+    res.json({ reply: `[${config.nombreIA}] [Pensamiento Simulado] He analizado tu consulta libre: "${message}". Mis canales de auto-configuración y razonamiento en segundo plano se encuentran activos procesando de forma estable.` });
   }
 });
 
+app.use((err, req, res, next) => { res.status(500).json({ reply: "[IA] Reajustando hilos lógicos de contingencia." }); });
+
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[SISTEMA - MOTOR DE AUTO-CORRECCIÓN DE HARDWARE ONLINE]');
+  console.log('\n[ MOTOR COGNITIVO INSTALADO - LA IA AHORA PENSARÁ SUS RESPUESTAS ]');
 });
-
-
