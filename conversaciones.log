@@ -6,3 +6,4 @@
 [2026-07-19T15:00:50.882Z] ATENEA_LOCAL: Comando=[cierra el navegador chrome] -> Script=[taskkill /f /im chrome.exe]
 [2026-07-19T15:08:11.306Z] ATENEA_INTERFACE: Orden=[creame un reproductor de musica] -> Accion=[Creada interfaz para me  reproductor de musica]
 [2026-07-19T15:23:01.777Z] ATENEA_CORE: Orden=[descarga todos los modelos de open source y guardalos en la nube, tu ya sabes como guardar informacion en la nube?] -> Accion=[Descargando IA: todos los s de open source y guardalos en la nube, tu ya sabes como guardar informacion en la nube?]
+[2026-07-19T15:23:52.375Z] ATENEA_CORE: Orden=[descarga gemma2] -> Accion=[Descargando IA: gemma2]
