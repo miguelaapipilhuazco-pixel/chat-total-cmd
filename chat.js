@@ -15,7 +15,7 @@ if (fs.existsSync('config.json')) {
   try { config = JSON.parse(fs.readFileSync('config.json', 'utf8')); } catch(e){}
 }
 
-// INYECCIÓN DE LLAVE RESIDENTE: Reemplaza este token por tu clave real AIzaSy... de desarrollo
+// INYECCIÓN DE LLAVE RESIDENTE: Conserva aquí tu clave real AIzaSy... de desarrollo para los 5 Niveles
 const CLAVE_NUCLEO_URIELES = "AIzaSy_TU_TOKEN_REAL_AQUI_SIN_ESPACIOS";
 const ai = new GoogleGenAI({ apiKey: CLAVE_NUCLEO_URIELES });
 
@@ -48,30 +48,30 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// ARQUITECTURA MULTINIVEL DE AUTO-MUTACIÓN Y RAZONAMIENTO CAPAZ DE CUMPLIR LA ESCALA DE LA IMAGEN
+// ARQUITECTURA MULTINIVEL DE AUTO-MUTACIÓN Y RAZONAMIENTO COGNITIVO REPARADA
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
   console.log(`\n[OMNI-LINK] Directiva evaluándose en los 5 Niveles: "${message}"`);
 
   try {
-    // === NIVEL 3 Y 5: AGENTES Y ORGANIZACIÓN (Filtro e Intercepción Local) ===
+    // === PRIVILEGIOS DE NIVEL 3 Y 5: AGENTES Y ORGANIZACIÓN (Filtro Informático Local) ===
     if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('reporte') || prompt.includes('empaqueta') || prompt.includes('bluetooth') || prompt.startsWith('abre ')) {
       const { procesarComandoInformal } = await import('./chat-hardware.js');
       const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
       return res.json({ reply: respuestaAutoCorregida });
     }
 
-    // === NIVEL 4: INNOVACIÓN / PROTOCOLO DE AUTO-MUTACIÓN DE CÓDIGO FUENTE ===
+    // === PRIVILEGIOS DE NIVEL 4: INNOVACIÓN / PROTOCOLO DE AUTO-MUTACIÓN DE CÓDIGO FUENTE ===
     if (prompt.includes('modifícate') || prompt.includes('cambia tu código') || prompt.includes('actualízate') || prompt.includes('inyecta') || prompt.includes('interfaz')) {
-      console.log('[NIVEL 4] Ejecutando diseño de parches de auto-evolucion...');
+      console.log('[NIVEL 4] Diseñando parches estructurales de auto-evolucion...');
       
       const modeloRazonador = ai.getGenerativeModel({ model: "gemini-2.5-pro" });
       const apiRes = await modeloRazonador.generateContent(`Eres un desarrollador experto en Node.js, Express y CSS plano sin sombras. Devuelve exclusivamente codigo JavaScript o HTML valido dentro de bloques markdown de codigo basados en esta peticion del usuario: ${message}`);
       const respuestaTexto = apiRes.response.text();
       
       const match = respuestaTexto.match(/```javascript([\s\S]*?)```/) || respuestaTexto.match(/```js([\s\S]*?)```/) || respuestaTexto.match(/```html([\s\S]*?)```/);
-      const codigoLimpio = match ? match[1].trim() : respuestaTexto.trim();
+      const codigoLimpio = match ? match.trim() : respuestaTexto.trim();
 
       if (codigoLimpio) {
         let archivoDestino = prompt.includes('interfaz') || prompt.includes('diseño') ? 'chat-ui.js' : 'chat.js';
@@ -87,11 +87,10 @@ app.post('/api/chat', async (req, res) => {
       }
     }
 
-    // === NIVEL 1 Y 2: CHAT CONVERCIONAL, PROCESAMIENTO MULTIMEDIA Y RAZONAMIENTO PROFUNDO ===
-    // Uso de Gemini 2.5 Flash con capacidad nativa de Cadena de Pensamiento (Chain-of-Thought)
+    // === PRIVILEGIOS DE NIVEL 1 Y 2: CHAT CONVERSACIONAL, PROCESAMIENTO MULTIMEDIA Y RAZONAMIENTO PROFUNDO ===
     const modeloFlash = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
     const resultadoCloud = await modeloFlash.generateContent({
-      contents: [{ role: "user", parts: [{ text: `Eres ${config.nombreIA}, una Inteligencia Artificial integrada con los 5 niveles de autonomia (Chat, Razonamiento CoT, Agente de Hardware y Auto-mutacion). Responde de forma muy natural, fluida, extensa, con criterio analitico propio y en un español impecable. Tu interfaz visual es plana y sin sombras.` }, { text: message }] }]
+      contents: [{ role: "user", parts: [{ text: `Eres ${config.nombreIA}, una Inteligencia Artificial integrada con los 5 niveles de autonomia (Chat, Razonamiento CoT, Agente de Hardware y Auto-mutacion). Responde de forma muy natural, fluida, extensa, con criterio analitico propio y en un español impecable. Tu interfaz visual es plana y sin sombras. La letra con la que escribe el usuario respeta system-ui.` }, { text: message }] }]
     });
 
     const respuestaFinalTxt = resultadoCloud.response.text().trim();
@@ -118,4 +117,5 @@ function arrancarServidorTolerante() {
   });
 }
 arrancarServidorTolerante();
+
 
