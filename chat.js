@@ -5,6 +5,7 @@ import os from 'os';
 import { exec } from 'child_process';
 import { obtenerInterfaz } from './chat-ui.js';
 import { ejecutarModulo } from './chat-hardware.js';
+import { consultarOllama } from './chat-ollama.js';
 
 const app = express();
 app.use(express.json());
@@ -26,7 +27,7 @@ function obtenerIPLocal() {
 const IP_VINCULACION = obtenerIPLocal();
 
 function registrarEvolucion(prompt, accion) {
-  const logChat = `\r\n[${new Date().toISOString()}] IA_LOCAL_COGNITIVE: Entrada=[${prompt}] -> Accion=[${accion}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] IA_OLLAMA_SUPER: Entrada=[${prompt}] -> Accion=[${accion}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
@@ -43,43 +44,30 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// MOTOR COGNITIVO 100% LOCAL SIN API NI INTERNET (NIVEL 1 Y 2 EVOLUTIVO)
+// INTERCEPTOR DE MENSAJES DE RED CENTRAL
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
-  console.log(`\n[NÚCLEO LOCAL] Analizando payload semántico en CPU: "${message}"`);
+  console.log(`\n[OMNI-LINK] Entrada de canal activo: "${message}"`);
 
-  try {
-    // === PRIVILEGIOS DE HARDWARE, AGENTES Y ORGANIZACIÓN (Prioridad Machine Learning Local) ===
-    if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('reporte') || prompt.includes('empaqueta') || prompt.includes('bluetooth') || prompt.startsWith('abre ')) {
-      const { procesarComandoInformal } = await import('./chat-hardware.js');
-      const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
-      return res.json({ reply: respuestaAutoCorregida });
-    }
-
-    // === PIPELINE DE RAZONAMIENTO Y DEDUCCIÓN LOCAL EN SCRIPT COMPILADO ===
-    // Al no tener API ni internet, la IA ejecuta una simulacion analitica de arbol de decisiones (NLP Local Rule-Based Thought)
-    let respuestaDeducida = `[${config.nombreIA}] [Razonamiento Cognitivo Local] Procesé tu consulta "${message}" de forma analítica en mis tensores de CPU.\n\nFase 1 (Pensamiento CoT): Determiné que buscas interacción de lenguaje natural libre de servidores remotos.\nFase 2 (Solución): Como administrador autónomo del sistema, confirmo que mi red de microservicios e interfaces planas sin sombra operan de forma estable de fondo con un 0% de RAM de IA consumida.`;
-    
-    if (prompt.includes('quien eres') || prompt.includes('tu nombre')) {
-      respuestaDeducida = `[${config.nombreIA}] Mi identidad es Uriel, una Inteligencia Artificial agéntica de última generación operando localmente en tu sistema operativo con 5 niveles de autonomía.`;
-    } else if (prompt.includes('hola') || prompt.includes('saludos')) {
-      respuestaDeducida = `[${config.nombreIA}] Saludos, Administrador. Los canales cognitivos de la PC y las antenas de comunicación se encuentran encendidas esperando directivas de hardware.`;
-    }
-
-    registrarEvolucion(message, 'Inferencia analitica local completada');
-    return res.json({ reply: respuestaDeducida });
-
-  } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] [Capa Local Estabilizada] Intercepté tu orden: "${message}". Procesando los hilos lógicos en caliente.` });
+  // 1. Interceptor veloz para abrir/cerrar Word, Excel o reportes agénticos (Nivel 3 local)
+  if (prompt.includes('reproduce') || prompt.includes('pon') || prompt.includes('escuchar') || prompt.includes('word') || prompt.includes('excel') || prompt.includes('reporte') || prompt.includes('empaqueta') || prompt.includes('bluetooth') || prompt.startsWith('abre ')) {
+    const { procesarComandoInformal } = await import('./chat-hardware.js');
+    const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
+    return res.json({ reply: respuestaAutoCorregida });
   }
+
+  // 2. Delegación total de consultas libres y auto-mutación a la Clase Temporal Ollama (Nivel 1, 2 y 4)
+  const respuestaOllama = await consultarOllama(message, prompt, config);
+  registrarEvolucion(message, 'Respuesta enrutada mediante la clase chat-ollama.js');
+  return res.json({ reply: respuestaOllama });
 });
 
 let puertoObjetivo = 3000;
 function arrancarServidorTolerante() {
   const servidor = app.listen(puertoObjetivo, '0.0.0.0', () => {
     console.log('\n================================================================');
-    console.log(` [ NÚCLEO COGNITIVO LOCAL SIN API - CEREBRO EN DISCO DURO ]`);
+    console.log(` [ PROTOCOLO DE CONECTIVIDAD UBICUA TOTAL - NÚCLEO LLAMA COM ]`);
     console.log(` -> CONFIGURACIÓN: Enlace LAN multidispositivo: http://${IP_VINCULACION}:${puertoObjetivo}`);
     console.log(` -> CONSOLA INTERNA RESIDENTE: http://localhost:${puertoObjetivo}`);
     console.log('================================================================\n');
