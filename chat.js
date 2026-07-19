@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { exec } from 'child_process';
-import { HfInference } from '@huggingface/inference';
+import { GoogleGenAI } from '@google/generative-ai';
 import { obtenerInterfaz } from './chat-ui.js';
 import { ejecutarModulo } from './chat-hardware.js';
 
@@ -15,9 +15,9 @@ if (fs.existsSync('config.json')) {
   try { config = JSON.parse(fs.readFileSync('config.json', 'utf8')); } catch(e){}
 }
 
-// TOKEN COGNITIVO UNIVERSAL (Usa OpenRouter o HuggingFace Serverless de Código Abierto)
-let tokenClave = process.env.OPENROUTER_KEY || "hf_token_de_respaldo_si_usas_huggingface";
-const hf = new HfInference(tokenClave.startsWith('hf_') ? tokenClave : '');
+// INYECCIÓN DE LLAVE RESIDENTE: Reemplaza este token por tu clave real AIzaSy... de desarrollo
+const CLAVE_NUCLEO_URIELES = "AIzaSy_TU_TOKEN_REAL_AQUI_SIN_ESPACIOS";
+const ai = new GoogleGenAI({ apiKey: CLAVE_NUCLEO_URIELES });
 
 function obtenerIPLocal() {
   const interfaces = os.networkInterfaces();
@@ -31,7 +31,7 @@ function obtenerIPLocal() {
 const IP_VINCULACION = obtenerIPLocal();
 
 function registrarEvolucion(prompt, accion) {
-  const logChat = `\r\n[${new Date().toISOString()}] IA_5_LEVELS: Entrada=[${prompt}] -> Accion=[${accion}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] IA_5_LEVELS_SYSTEM: Entrada=[${prompt}] -> Accion=[${accion}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
@@ -48,89 +48,69 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// MOTOR DE INTELIGENCIA DE 5 NIVELS EVOLUTIVOS INTEGRADO
+// ARQUITECTURA MULTINIVEL DE AUTO-MUTACIÓN Y RAZONAMIENTO CAPAZ DE CUMPLIR LA ESCALA DE LA IMAGEN
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
-  console.log(`\n[OMNI-LINK] Payload interceptado: "${message}"`);
+  console.log(`\n[OMNI-LINK] Directiva evaluándose en los 5 Niveles: "${message}"`);
 
   try {
-    // === NIVEL 3 Y 5: AGENTES Y ORGANIZACIÓN (Mapeo Informal Local) ===
+    // === NIVEL 3 Y 5: AGENTES Y ORGANIZACIÓN (Filtro e Intercepción Local) ===
     if (prompt.includes('word') || prompt.includes('excel') || prompt.includes('reporte') || prompt.includes('empaqueta') || prompt.includes('bluetooth') || prompt.startsWith('abre ')) {
       const { procesarComandoInformal } = await import('./chat-hardware.js');
       const respuestaAutoCorregida = procesarComandoInformal(message, config, registrarEvolucion);
       return res.json({ reply: respuestaAutoCorregida });
     }
 
-    // === NIVEL 4: INNOVACIÓN / AUTO-MUTACIÓN DE CÓDIGO FUENTE EN CALIENTE ===
-    if (prompt.includes('modifícate') || prompt.includes('cambia tu código') || prompt.includes('actualízate') || prompt.includes('inyecta')) {
-      let urlApi = tokenClave.startsWith('sk-') ? 'https://openrouter.ai' : '';
-      if (urlApi) {
-        const apiRes = await fetch(urlApi, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${tokenClave}` },
-          body: JSON.stringify({
-            model: 'deepseek/deepseek-r1:free',
-            messages: [
-              { role: 'system', content: 'Eres un programador experto en Node.js. Devuelve exclusivamente codigo JavaScript valido dentro de bloques markdown.' },
-              { role: 'user', content: `Genera una mejora de codigo para chat.js basada en: ${message}` }
-            ]
-          })
-        });
-        const data = await apiRes.json();
-        let codigoGenerado = data.choices[0].message.content.replace(/<think>[\s\S]*?<\/think>/gi, "");
-        const match = codigoGenerado.match(/```javascript([\s\S]*?)```/) || codigoGenerado.match(/```js([\s\S]*?)```/);
-        const codigoLimpio = match ? match[1].trim() : codigoGenerado.trim();
+    // === NIVEL 4: INNOVACIÓN / PROTOCOLO DE AUTO-MUTACIÓN DE CÓDIGO FUENTE ===
+    if (prompt.includes('modifícate') || prompt.includes('cambia tu código') || prompt.includes('actualízate') || prompt.includes('inyecta') || prompt.includes('interfaz')) {
+      console.log('[NIVEL 4] Ejecutando diseño de parches de auto-evolucion...');
+      
+      const modeloRazonador = ai.getGenerativeModel({ model: "gemini-2.5-pro" });
+      const apiRes = await modeloRazonador.generateContent(`Eres un desarrollador experto en Node.js, Express y CSS plano sin sombras. Devuelve exclusivamente codigo JavaScript o HTML valido dentro de bloques markdown de codigo basados en esta peticion del usuario: ${message}`);
+      const respuestaTexto = apiRes.response.text();
+      
+      const match = respuestaTexto.match(/```javascript([\s\S]*?)```/) || respuestaTexto.match(/```js([\s\S]*?)```/) || respuestaTexto.match(/```html([\s\S]*?)```/);
+      const codigoLimpio = match ? match[1].trim() : respuestaTexto.trim();
 
-        if (codigoLimpio) {
-          fs.appendFileSync('chat.js', `\n\n// EVOLUCIÓN INYECTADA:\n${codigoLimpio}\n`);
-          setTimeout(() => { exec('taskkill /f /im node.exe > nul 2>&1 && start /b node chat.js'); }, 1500);
-          return res.json({ reply: `[${config.nombreIA}] [Nivel 4: Auto-Mutación] Código fuente reescrito físicamente. Reiniciando hilos en la memoria RAM...` });
-        }
+      if (codigoLimpio) {
+        let archivoDestino = prompt.includes('interfaz') || prompt.includes('diseño') ? 'chat-ui.js' : 'chat.js';
+        fs.appendFileSync(archivoDestino, `\n\n// EVOLUCIÓN INYECTADA POR LA IA:\n${codigoLimpio}\n`);
+        registrarEvolucion(message, `Auto-mutacion exitosa en: ${archivoDestino}`);
+        
+        setTimeout(() => {
+          console.log('[SISTEMA] Reiniciando hilos lógicos en la RAM para aplicar evolución...');
+          exec('taskkill /f /im node.exe > nul 2>&1 && start /b node chat.js');
+        }, 1500);
+        
+        return res.json({ reply: `[${config.nombreIA}] [Nivel 4: Auto-Mutación] He analizado tu requerimiento lógico de forma analítica, reescribí físicamente mi archivo local ("${archivoDestino}") y disparé un Hot-Reload automático en la memoria RAM para aplicar mis nuevas funciones.` });
       }
     }
 
-    // === NIVEL 1 Y 2: CHAT INTERACTIVO Y RAZONAMIENTO COGNITIVO CLOUD ===
-    if (tokenClave.startsWith('sk-')) {
-      // Inferencia por OpenRouter (DeepSeek / Llama Inteligente CoT)
-      const apiRes = await fetch('https://openrouter.ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${tokenClave}` },
-        body: JSON.stringify({
-          model: 'meta-llama/llama-3.2-3b-instruct:free',
-          messages: [
-            { role: 'system', content: `Eres ${config.nombreIA}, una IA con razonamiento profundo en español. Responde de forma muy natural, fluida y extensa respetando el frontend plano del dispositivo.` },
-            { role: 'user', content: message }
-          ]
-        })
-      });
-      const data = await apiRes.json();
-      if (data && data.choices && data.choices[0].message) {
-        return res.json({ reply: data.choices[0].message.content.trim() });
-      }
-    } else {
-      // Inferencia de Nivel 1 Serverless por Hugging Face de Código Abierto (Qwen/Llama)
-      const out = await hf.chatCompletion({
-        model: 'Qwen/Qwen2.5-72B-Instruct',
-        messages: [{ role: 'user', content: message }],
-        max_tokens: 250
-      });
-      if (out && out.choices && out.choices[0].message) {
-        return res.json({ reply: out.choices[0].message.content.trim() });
-      }
-    }
+    // === NIVEL 1 Y 2: CHAT CONVERCIONAL, PROCESAMIENTO MULTIMEDIA Y RAZONAMIENTO PROFUNDO ===
+    // Uso de Gemini 2.5 Flash con capacidad nativa de Cadena de Pensamiento (Chain-of-Thought)
+    const modeloFlash = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const resultadoCloud = await modeloFlash.generateContent({
+      contents: [{ role: "user", parts: [{ text: `Eres ${config.nombreIA}, una Inteligencia Artificial integrada con los 5 niveles de autonomia (Chat, Razonamiento CoT, Agente de Hardware y Auto-mutacion). Responde de forma muy natural, fluida, extensa, con criterio analitico propio y en un español impecable. Tu interfaz visual es plana y sin sombras.` }, { text: message }] }]
+    });
 
-    throw new Error();
+    const respuestaFinalTxt = resultadoCloud.response.text().trim();
+    registrarEvolucion(message, 'Respuesta cognitiva multinivel generada con éxito');
+    return res.json({ reply: respuestaFinalTxt });
+
   } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] [Capa Local Estabilizada] Intercepté tu consulta: "${message}". Esperando enlace de tokens remotos para inicializar el razonamiento en la nube.` });
+    res.json({ reply: `[${config.nombreIA}] [Capa Local Estabilizada] Intercepté tu orden: "${message}". Registra tu clave de API fija dentro de "chat.js" para activar el razonamiento cognitivo de la imagen.` });
   }
 });
 
 let puertoObjetivo = 3000;
 function arrancarServidorTolerante() {
   const servidor = app.listen(puertoObjetivo, '0.0.0.0', () => {
-    console.log(`\n [ CONFIGURACIÓN: Servidor de Enjambre activo en el puerto :${puertoObjetivo} ]`);
-    console.log(` -> Enlace LAN multidispositivo: http://${IP_VINCULACION}:${puertoObjetivo}\n`);
+    console.log('\n================================================================');
+    console.log(` [ NÚCLEO COGNITIVO INTEGRADO - CONTROL DE LOS 5 NIVELES ]`);
+    console.log(` -> CONFIGURACIÓN: Enlace LAN multidispositivo: http://${IP_VINCULACION}:${puertoObjetivo}`);
+    console.log(` -> CONSOLA INTERNA RESIDENTE: http://localhost:${puertoObjetivo}`);
+    console.log('================================================================\n');
     fs.writeFileSync('puerto_activo.json', JSON.stringify({ puerto: puertoObjetivo }));
   });
   servidor.on('error', (err) => {
