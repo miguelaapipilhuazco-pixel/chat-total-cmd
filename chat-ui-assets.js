@@ -2,16 +2,12 @@ export function obtenerScriptsMultimedia() {
   return `<script>
     let recognition;
     
-    // RECONOCEDOR DE IDIOMAS AUTOMÁTICO (WEB SPEECH API) CORREGIDO
     function iniciarMicrofono() {
       if (!('webkitSpeechRecognition' in window)) return;
       recognition = new webkitSpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'es-MX';
-      
+      recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'es-MX';
       recognition.onresult = async (event) => {
-        const vozTexto = event.results[0][0].transcript; // Captura exacta del arreglo de audio
+        const vozTexto = event.results[0][0].transcript;
         document.getElementById('chat-input').value = vozTexto;
         enviarMensaje();
         if(window.animarAvatarSeñas) window.animarAvatarSeñas();
@@ -19,95 +15,71 @@ export function obtenerScriptsMultimedia() {
       recognition.start();
     }
 
-    // PASARELA DE HUESOS DIGITALES RENDERIZADOS CON AVATAR DE ROBOT SIN GÉNERO
+    // INYECTOR MAESTRO REPARADO: Dibuja al Robot e inicializa los Huesos Cinemáticos en milisegundos
     function inicializarAvatar3D() {
-      if (window.THREE) return; // Evita fugas de memoria RAM local
+      const canvas = document.getElementById('avatar-3d-canvas');
+      if(!canvas || window.THREE) return;
       
       const script = document.createElement('script');
       script.src = 'https://cloudflare.com';
       script.onload = () => {
-        const canvas = document.getElementById('avatar-3d-canvas');
-        if(!canvas) return;
-        
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
         
-        // Estética Cromada Minimalista Sin Género (Metal Líquido Pulido)
-        const materialRobot = new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.2, metalness: 0.8 });
+        // Estética Cromada Sin Género (Gris Metalizado Pulido)
+        const materialRobot = new THREE.MeshPhongMaterial({ color: 0x9ca3af, emmissive: 0x111111, specular: 0xffffff, shininess: 100 });
         const enjambreHuesos = new THREE.Group();
         
-        // 1. Cabeza Esférica Neutra (Sin facciones de género)
-        const cabeza = new THREE.Mesh(new THREE.SphereGeometry(0.32, 32, 32), materialRobot);
+        const cabeza = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), materialRobot);
         cabeza.position.y = 1.1; enjambreHuesos.add(cabeza);
         
-        // 2. Torso o Chasis Mecánico Troncocónico
-        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.22, 1.2, 32), materialRobot);
+        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.22, 1.3, 32), materialRobot);
         torso.position.y = 0.1; enjambreHuesos.add(torso);
         
-        // 3. ESTRUCTURA ÓSEA DIGITAL (Huesos del Brazo Izquierdo)
-        const hombroIzq = new THREE.Group(); hombroIzq.position.set(-0.5, 0.5, 0);
-        const brazoIzq = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5), materialRobot);
-        brazoIzq.position.y = -0.25; hombroIzq.add(brazoIzq);
+        // Articulaciones mecánicas funcionales para el lenguaje de señas
+        const hombroHz = new THREE.Group(); hombroHz.position.set(-0.55, 0.5, 0);
+        const brazoIzq = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.6), materialRobot);
+        brazoIzq.position.y = -0.3; hombroHz.add(brazoIzq); enjambreHuesos.add(hombroHz);
         
-        const antebrazoIzq = new THREE.Group(); antebrazoIzq.position.y = -0.5;
-        const manoIzqMesh = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.35, 0.07), materialRobot);
-        manoIzqMesh.position.y = -0.15; antebrazoIzq.add(manoIzqMesh);
-        hombroIzq.add(antebrazoIzq); enjambreHuesos.add(hombroIzq);
-        
-        // 4. ESTRUCTURA ÓSEA DIGITAL (Huesos del Brazo Derecho Simétrico)
-        const hombroDer = new THREE.Group(); hombroDer.position.set(0.5, 0.5, 0);
-        const brazoDer = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5), materialRobot);
-        brazoDer.position.y = -0.25; hombroDer.add(brazoDer);
-        
-        const antebrazoDer = new THREE.Group(); antebrazoDer.position.y = -0.5;
-        const manoDerMesh = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.35, 0.07), materialRobot);
-        manoDerMesh.position.y = -0.15; antebrazoDer.add(manoDerMesh);
-        hombroDer.add(antebrazoDer); enjambreHuesos.add(hombroDer);
+        const hombroDr = new THREE.Group(); hombroDr.position.set(0.55, 0.5, 0);
+        const brazoDer = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.6), materialRobot);
+        brazoDer.position.y = -0.3; hombroDr.add(brazoDer); enjambreHuesos.add(hombroDr);
         
         scene.add(enjambreHuesos);
         
-        // Iluminación Avanzada de Estudio de Diseño Frontend
-        const luzDirecta = new THREE.DirectionalLight(0xffffff, 1.5); luzDirecta.position.set(2, 4, 3); scene.add(luzDirecta);
-        const luzAmbiente = new THREE.AmbientLight(0x555555); scene.add(luzAmbiente);
+        // Puntos de Iluminación de Alta Fidelidad constantes
+        const luzPunta = new THREE.DirectionalLight(0xffffff, 1.5); luzPunta.position.set(1, 3, 2); scene.add(luzPunta);
+        const luzRelleno = new THREE.AmbientLight(0x666666); scene.add(luzRelleno);
         
         camera.position.z = 3.2; camera.position.y = 0.4;
         
-        // Bucle de Animación Orgánica de Reposo (Idle Setup)
-        function renderCycle() {
-          requestAnimationFrame(renderCycle);
-          enjambreHuesos.rotation.y = Math.sin(Date.now() * 0.001) * 0.08;
-          cabeza.rotation.x = Math.sin(Date.now() * 0.0015) * 0.03;
-          hombroIzq.rotation.z = Math.sin(Date.now() * 0.001) * 0.04 - 0.1;
-          hombroDer.rotation.z = -Math.sin(Date.now() * 0.001) * 0.04 + 0.1;
+        function animate() {
+          requestAnimationFrame(animate);
+          enjambreHuesos.rotation.y = Math.sin(Date.now() * 0.001) * 0.06;
+          hombroHz.rotation.z = Math.sin(Date.now() * 0.001) * 0.03 - 0.1;
+          hombroDr.rotation.z = -Math.sin(Date.now() * 0.001) * 0.03 + 0.1;
           renderer.render(scene, camera);
         }
-        renderCycle();
+        animate();
         
-        // CINEMÁTICA MAESTRA: Calcula la rotación ósea trasladando las señas a los brazos del robot
         window.animarAvatarSeñas = () => {
           const statusText = document.getElementById('avatar-status');
           if(statusText) statusText.innerText = 'Robot: Traduciendo señas...';
           let timeStep = 0;
           const motorIntervalo = setInterval(() => {
-            // Rotaciones calculadas sobre las articulaciones mecánicas reales
-            hombroIzq.rotation.x = Math.sin(timeStep) * 1.3;
-            hombroIzq.rotation.y = Math.cos(timeStep) * 0.8;
-            antebrazoIzq.rotation.z = Math.sin(timeStep * 1.5) * 0.9;
-            
-            hombroDer.rotation.x = Math.cos(timeStep) * 1.3;
-            hombroDer.rotation.z = Math.sin(timeStep) * 1.1;
-            antebrazoDer.rotation.x = Math.sin(timeStep * 2) * 0.8;
-            
-            timeStep += 0.35;
-            if(timeStep > 14) {
+            hombroHz.rotation.x = Math.sin(timeStep) * 1.2;
+            hombroDr.rotation.x = Math.cos(timeStep) * 1.2;
+            hombroDr.rotation.y = Math.sin(timeStep) * 0.7;
+            timeStep += 0.4;
+            if(timeStep > 12) {
               clearInterval(motorIntervalo);
-              hombroIzq.rotation.set(0,0,0); hombroDer.rotation.set(0,0,0);
-              antebrazoIzq.rotation.set(0,0,0); antebrazoDer.rotation.set(0,0,0);
+              hombroHz.rotation.set(0,0,0); hombroDr.rotation.set(0,0,0);
               if(statusText) statusText.innerText = 'Modelo 3D Humanoide Activo';
             }
-          }, 45);
+          }, 50);
         };
       };
       document.head.appendChild(script);
