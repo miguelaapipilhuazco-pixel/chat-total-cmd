@@ -1,140 +1,105 @@
 import path from 'path';
+import { obtenerPaneles } from './chat-multimedia.js';
 
 export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estiloBorder, radioBordes) {
-  let radioBordesDinamico = '50%';
-  let colorOscuroNativo = 'rgba(32, 32, 32, 0.85)'; // Cristal oscuro esmerilado oficial de Windows 11 Mica
+  let colorOscuroNativo = 'rgba(32, 32, 32, 0.85)'; // Cristal oscuro esmerilado Windows 11
   let blurNativo = 'backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);';
   let bordeNativo = '1px solid rgba(255, 255, 255, 0.12)';
   
   let iconBraille = '&#x2817;&#x2803;'; 
-  
-  let iconSeñas = `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-    <rect x="3" y="11" width="2.5" height="5" rx="1.2"/>
-    <rect x="6.5" y="5" width="2.3" height="10" rx="1.1"/>
-    <rect x="10" y="3" width="2.2" height="12" rx="1.1"/>
-    <rect x="13.5" y="4.5" width="2.3" height="10.5" rx="1.1"/>
-    <rect x="17" y="7" width="2.4" height="8" rx="1.2"/>
-    <path d="M3.3 14.5c0 0-.3 4.5 4.7 5.5h6c4 0 5-4.5 5-5.5v-2H3.3v2z"/>
-  </svg>`; 
-  
+  let iconSeñas = `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><rect x="3" y="11" width="2.5" height="5" rx="1.2"/><rect x="6.5" y="5" width="2.3" height="10" rx="1.1"/><rect x="10" y="3" width="2.2" height="12" rx="1.1"/><rect x="13.5" y="4.5" width="2.3" height="10.5" rx="1.1"/><rect x="17" y="7" width="2.4" height="8" rx="1.2"/><path d="M3.3 14.5c0 0-.3 4.5 4.7 5.5h6c4 0 5-4.5 5-5.5v-2H3.3v2z"/></svg>`; 
   let iconTexto = 'Tᴛ'; 
-  
-  let iconVoz = `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-    <rect x="9" y="2" width="6" height="12" rx="3" ry="3"/>
-    <path d="M19 10a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 0 0 2 0v-4.08A7 7 0 0 0 19 10z"/>
-  </svg>`;
+  let iconVoz = `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><rect x="9" y="2" width="6" height="12" rx="3" ry="3"/><path d="M19 10a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 0 0 2 0v-4.08A7 7 0 0 0 19 10z"/></svg>`;
 
-  if (userAgent.includes('android') || userAgent.includes('watch')) {
-    radioBordesDinamico = '50%'; colorOscuroNativo = 'rgba(10, 10, 10, 0.98)'; blurNativo = ''; bordeNativo = '1px solid rgba(255, 255, 255, 0.05)';
-    iconBraille = '⠇⠃'; iconTexto = '⌨';
-  } else if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('macintosh')) {
-    radioBordesDinamico = '50%'; colorOscuroNativo = 'rgba(28, 28, 30, 0.85)'; blurNativo = 'backdrop-filter: blur(20px);'; bordeNativo = 'none';
-  }
+  const panelesHijo = obtenerPaneles();
 
   return `<!DOCTYPE html>
   <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Cruz Fixed</title>
+    <title>IA Cruz Multimedia</title>
+    <script src="https://tailwindcss.com"></script>
     <style>
-      body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; width: 100vw; height: 100vh; display: flex; items: center; justify-content: center; }
+      body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; width: 100vw; height: 100vh; display: flex; flex-direction: column; items: center; justify-content: flex-start; padding-top: 20px; }
       
-      /* CÁPSULA EN CRUZ FIJA ULTRA-COMPACTA DE 112PX AJUSTADA AL MÁXIMO */
       .capsula-cruz {
-        -webkit-app-region: drag !important; 
-        width: 112px; height: 112px;
-        background-color: ${colorOscuroNativo} !important;
-        ${blurNativo}
-        border: ${bordeNativo};
-        border-radius: 50%;
-        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.5);
+        -webkit-app-region: drag !important; width: 112px; height: 112px;
+        background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%;
         display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-        align-items: center; justify-items: center; padding: 4px; box-sizing: border-box; cursor: move;
+        align-items: center; justify-items: center; padding: 4px; box-sizing: border-box; cursor: move; box-shadow: none !important;
       }
-      
       .icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
+      .icon-btn { -webkit-app-region: no-drag !important; transition: transform 0.2s ease; cursor: pointer; display: flex; items: center; justify-content: center; border: none !important; background: transparent !important; box-shadow: none !important; filter: none !important; width: 30px; height: 36px; fill: rgba(255, 255, 255, 0.7) !important; color: rgba(255, 255, 255, 0.7) !important; }
+      .icon-btn:hover { transform: scale(1.15); fill: rgba(255, 255, 255, 1) !important; color: rgba(255, 255, 255, 1) !important; }
+      .punto-ico { font-size: 26px; color: rgba(255, 255, 255, 0.5); line-height: 1; -webkit-app-region: no-drag !important; cursor: pointer; display: flex; items: center; justify-content: center; width: 20px; height: 20px; margin-top: -6px; }
       
-      /* EXCLUSIÓN DE BOTONES DEL ARRASTRE PARA INTERACCIÓN INMEDIATA */
-      .icon-btn { 
-        -webkit-app-region: no-drag !important; 
-        transition: transform 0.2s ease, filter 0.2s; 
-        cursor: pointer; display: flex; items: center; justify-content: center; 
-        border: none !important; background: transparent !important; box-shadow: none !important;
-        width: 30px; height: 36px; 
-        fill: rgba(255, 255, 255, 0.7) !important; color: rgba(255, 255, 255, 0.7) !important; 
-      }
-      .icon-btn:hover { transform: scale(1.15); filter: brightness(1.4) !important; }
-      .icon-btn:active { transform: scale(0.92); }
+      /* ESTILOS DE INTERFAZ MULTIMEDIA COMPACTA LOCAL */
+      .panel-multimedia { display: none; -webkit-app-region: no-drag !important; width: 260px; background-color: ${colorOscuroNativo}; ${blurNativo} border: ${bordeNativo}; border-radius: 20px; padding: 12px; color: white; margin-top: 14px; box-sizing: border-box; flex-direction: column; gap: 8px; }
+      .panel-header { font-size: 10px; uppercase: true; font-weight: bold; tracking-pattern: uppercase; letter-spacing: 1px; color: #a1a1aa; border-bottom: 1px solid #27272a; padding-bottom: 4px; text-transform: uppercase; }
+      .chat-box-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; max-height: 110px; }
+      .chat-ia-text { font-size: 12px; font-family: monospace; color: #a1a1aa; }
+      .chat-user-text { font-size: 12px; color: #f59e0b; text-align: right; font-weight: 500; }
+      .chat-input-row { display: flex; gap: 4px; border-top: 1px solid #27272a; padding-top: 6px; }
+      .chat-field { flex: 1; bg-color: #09090b; background: rgba(9,9,11,0.6); border: 1px solid #27272a; border-radius: 8px; padding: 4px 8px; font-size: 12px; color: white; outline: none; }
+      .chat-btn { background: #27272a; border-radius: 8px; color: white; border: none; padding: 4px 10px; font-size: 12px; cursor: pointer; font-weight: bold; }
+      .avatar-stream-area { flex: 1; background: rgba(9,9,11,0.8); border-radius: 12px; border: 1px solid rgba(39,39,42,0.5); display: flex; flex-direction: column; items: center; justify-content: center; padding: 8px; text-align: center; gap: 4px; }
+      .avatar-mesh { font-size: 24px; }
+      .avatar-title { font-size: 11px; color: #f59e0b; font-weight: bold; }
+      .avatar-desc { font-size: 9px; color: #a1a1aa; margin: 0; line-height: 1.2; padding: 0 8px; }
       
-      /* TOOLTIPS INTEGRADOS PREMIUM ESMERILADOS */
-      .icon-wrapper .tooltip-text {
-        visibility: hidden;
-        background-color: rgba(20, 20, 20, 0.95);
-        color: rgba(255, 255, 255, 0.9);
-        text-align: center;
-        border-radius: 6px;
-        padding: 3px 6px;
-        position: absolute;
-        z-index: 100;
-        bottom: 120%;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 9px;
-        font-weight: 600;
-        white-space: nowrap;
-        opacity: 0;
-        transition: opacity 0.15s ease-in-out;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        pointer-events: none;
-      }
-      .icon-wrapper:hover .tooltip-text { visibility: visible; opacity: 1; }
-      
-      /* PUNTO INTERACTIVO CENTRAL EN EL EJE GEOMÉTRICO EXACTO */
-      .punto-ico { 
-        font-size: 26px; color: rgba(255, 255, 255, 0.5); line-height: 1; 
-        -webkit-app-region: no-drag !important; cursor: pointer; display: flex; 
-        items: center; justify-content: center; width: 20px; height: 20px; margin-top: -6px; 
-      }
-      .punto-ico:hover { color: rgba(255, 255, 255, 0.9); }
+      .active-mic { animation: pulse-red 1.5s infinite; color: #ef4444 !important; }
+      @keyframes pulse-red { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; color: #f87171; } 100% { transform: scale(1); opacity: 0.5; } }
     </style>
     <script>
-      async function dispararFuncion(m){ 
-        try{ await fetch('/api/funcion',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({modulo:m})}); }catch(e){} 
+      function alternarModulo(modulo) {
+        const chat = document.getElementById('modulo-chat');
+        const camara = document.getElementById('modulo-camara');
+        const punto = document.getElementById('punto-central');
+        
+        chat.style.display = 'none';
+        camara.style.display = 'none';
+        punto.classList.remove('active-mic');
+        punto.innerText = '•';
+
+        if(modulo === 'texto') chat.style.display = 'flex';
+        else if(modulo === 'señas') camara.style.display = 'flex';
+        else if(modulo === 'voz') { punto.classList.add('active-mic'); punto.innerText = '🎙'; }
+      }
+
+      async function enviarMensaje() {
+        const input = document.getElementById('chat-input');
+        const box = document.getElementById('chat-box');
+        if(!input.value.trim()) return;
+        
+        box.innerHTML += '<div class=\"chat-user-text\">Tú: ' + input.value + '</div>';
+        const promor = input.value;
+        input.value = '';
+
+        try {
+          const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:promor}) });
+          const data = await res.json();
+          box.innerHTML += '<div class=\"chat-ia-text\" style=\"color:#e4e4e7; margin-top:3px;\">IA: ' + data.reply + '</div>';
+          box.scrollTop = box.scrollHeight;
+        } catch(e){}
       }
     </script>
   </head>
   <body>
     
-    <div id="modo-ext" class="capsula-cruz" style="display: grid;">
+    <div class="capsula-cruz">
       <div></div>
-      <div class="icon-wrapper">
-        <div onclick="dispararFuncion('braille')" class="icon-btn" style="font-size: 24px; font-weight: bold;">${iconBraille}</div>
-        <span class="tooltip-text">Braille</span>
-      </div>
+      <div class="icon-wrapper"><div onclick=\"dispararFuncion(\x27braille\x27)\" class="icon-btn" style="font-size: 24px; font-weight: bold;">${iconBraille}</div></div>
       <div></div>
-      
-      <div class="icon-wrapper">
-        <div onclick="dispararFuncion('señas')" class="icon-btn">${iconSeñas}</div>
-        <span class="tooltip-text">Lenguaje de Señas</span>
-      </div>
-      <div class="icon-wrapper">
-        <div class="punto-ico icon-btn">•</div>
-        <span class="tooltip-text">Núcleo Activo</span>
-      </div>
-      <div class="icon-wrapper">
-        <div onclick="dispararFuncion('texto')" class="icon-btn" style="font-size: 20px; font-weight: bold; font-family: 'Times New Roman', serif; line-height: 1;">${iconTexto}</div>
-        <span class="tooltip-text">Texto</span>
-      </div>
+      <div class="icon-wrapper"><div onclick="alternarModulo('señas')" class="icon-btn">${iconSeñas}</div></div>
+      <div class="icon-wrapper"><div id="punto-central" class="punto-ico icon-btn">•</div></div>
+      <div class="icon-wrapper"><div onclick="alternarModulo('texto')" class="icon-btn" style="font-size: 20px; font-weight: bold; font-family: 'Times New Roman', serif; line-height: 1;">${iconTexto}</div></div>
       <div></div>
-      
-      <div class="icon-wrapper">
-        <div onclick="dispararFuncion('voz')" class="icon-btn">${iconVoz}</div>
-        <span class="tooltip-text">Voz</span>
-      </div>
+      <div class="icon-wrapper"><div onclick="alternarModulo('voz')" class="icon-btn">${iconVoz}</div></div>
       <div></div>
     </div>
+
+    ${panelesHijo}
 
   </body>
   </html>`;
