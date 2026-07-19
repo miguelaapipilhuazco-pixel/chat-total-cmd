@@ -37,10 +37,11 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IA Cruz Dynamic</title>
+    <script src="https://tailwindcss.com"></script>
     <style>
       body { background: transparent !important; margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; width: 100vw; height: 100vh; display: flex; items: center; justify-content: center; }
       
-      /* ESTADO 1: CAPSULA EN CRUZ SIMÉTRICA ARRASTRABLE */
+      /* ESTADO 1: CÁPSULA EN CRUZ SIMÉTRICA ARRASTRABLE */
       .capsula-cruz {
         -webkit-app-region: drag; width: 145px; height: 145px;
         background-color: ${colorOscuroNativo} !important;
@@ -52,10 +53,10 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
         align-items: center; justify-items: center; padding: 12px; box-sizing: border-box; cursor: move;
       }
       
-      /* ESTADO 2: CONTENEDOR COMPACTO DE ARRASTRE ABSOLUTO SIN RESIDUOS */
+      /* ESTADO 2: CONTENEDOR COMPACTO LIBRE */
       .capsula-compacta {
-        -webkit-app-region: drag; width: 145px; height: 145px;
-        display: none; align-items: center; justify-content: center; background: transparent !important; cursor: move;
+        width: 145px; height: 145px;
+        display: none; align-items: center; justify-content: center; background: transparent !important;
       }
       
       .icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
@@ -81,7 +82,6 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
         position: absolute;
         z-index: 100;
         bottom: 130%;
-        left: 50 Impo;
         left: 50%;
         transform: translateX(-50%);
         font-size: 10px;
@@ -98,8 +98,17 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
       .punto-ico { font-size: 28px; color: rgba(255, 255, 255, 0.5); line-height: 1; -webkit-app-region: no-drag; cursor: pointer; display: flex; items: center; justify-content: center; width: 24px; height: 24px; margin-top: -6px; }
       .punto-ico:hover { color: rgba(255, 255, 255, 0.9); }
       
-      /* LOGO ULTRA-COMPACTADO (REDUCIDO A 68PX SÓLIDOS Y ESTÉTICOS) */
-      .logo-circulo { -webkit-app-region: no-drag !important; width: 68px; height: 68px; background-color: ${colorOscuroNativo} !important; ${blurNativo} border: ${bordeNativo}; border-radius: 50%; display: flex; items: center; justify-content: center; box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 8px; box-sizing: border-box; z-index: 20; }
+      /* HABILITACIÓN DE ARRASTRE DIRECTO EN EL CÍRCULO COMPACTO */
+      .logo-circulo { 
+        -webkit-app-region: drag !important; /* FORZADO: Habilita arrastrar el circulo oscuro */
+        width: 68px; height: 68px; 
+        background-color: ${colorOscuroNativo} !important; 
+        ${blurNativo} 
+        border: ${bordeNativo}; 
+        border-radius: 50%; display: flex; items: center; justify-content: center; 
+        box-shadow: 0 15px 20px rgba(0,0,0,0.4); overflow: hidden; padding: 8px; box-sizing: border-box; z-index: 20;
+        cursor: move;
+      }
       .logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
     </style>
     <script>
@@ -149,10 +158,11 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
     
     <div id="modo-com" class="capsula-compacta">
       <div class="icon-wrapper">
-        <div onclick="mutar('abrir')" class="icon-btn logo-circulo">
+        <!-- El evento dblclick (doble clic) expande el menu, liberando el clic simple para arrastrar sin interrupciones -->
+        <div ondblclick=\"mutar(\'abrir\')\" class=\"logo-circulo\">
           <img src="/logo.png" class="logo-img" />
         </div>
-        <span class="tooltip-text">Expandir</span>
+        <span class="tooltip-text">Doble Clic: Expandir</span>
       </div>
     </div>
   </body>
