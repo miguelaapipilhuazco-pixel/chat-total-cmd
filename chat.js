@@ -19,7 +19,7 @@ function registrarEvolucion(prompt, accion) {
   if (fs.existsSync('guardar.bat')) { exec('guardar.bat'); }
 }
 
-// INTERFAZ EN CRUZ 3X3 EXACTA CON BOTÓN CENTRAL MUTABLE
+// INTERFAZ CONMUTABLE ENTRE MATRIZ ORBITAL Y EL LOGOTIPO DORADO REAL
 app.get('/', (req, res) => {
   const htmlGridPuro = `<!DOCTYPE html>
   <html>
@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
       function mutarEstado(modo) {
         const extendido = document.getElementById('modo-extendido');
         const compacto = document.getElementById('modo-compacto');
-        if(modo === 'cerrar'){
+        if(modo === 'cerrar') {
           extendido.style.setProperty('display', 'none', 'important');
           compacto.style.setProperty('display', 'flex', 'important');
         } else {
@@ -47,36 +47,43 @@ app.get('/', (req, res) => {
       }
     </script>
   </head>
-  <body class="bg-transparent select-none">
+  <body class="bg-transparent select-none w-full h-full flex items-center justify-center">
 
-    <!-- REJILLA MATEMÁTICA EN CRUZ DE 3X3 -->
+    <!-- ESTADO 1: MATRIZ ORBITAL EN CRUZ CARDINAL -->
     <div id="modo-extendido" class="grid grid-cols-3 grid-rows-3 gap-3 w-[240px] h-[240px] items-center justify-items-center bg-transparent" style="display: grid;">
       <div></div>
       <!-- ARRIBA: Braille -->
       <div title="Braille" class="icon-button w-14 h-14 bg-zinc-950/95 text-amber-500 border-2 border-amber-500/40 rounded-full flex items-center justify-center text-2xl font-bold shadow-2xl">&#x2803;</div>
       <div></div>
       
-      <!-- IZQUIERDA: Lenguaje de Señas -->
+      <!-- IZQUIERDA: Lenguaje de Señas YOLOv11 -->
       <div title="Lenguaje de Señas" class="icon-button w-14 h-14 bg-zinc-950/95 text-white border-2 border-zinc-800 rounded-full flex items-center justify-center text-xl shadow-2xl">🖐️</div>
       <!-- CENTRO: Botón de mutación física -->
-      <div onclick="mutarEstado('cerrar')" title="Cerrar Asistente" class="icon-button w-12 h-12 bg-red-950/80 text-white border border-red-700/40 rounded-full flex items-center justify-center text-sm font-bold shadow-2xl z-10">❌</div>
-      <!-- DERECHA: Texto -->
+      <div onclick="mutarEstado('cerrar')" title="Cerrar Asistente" class="icon-button w-12 h-12 bg-red-950/80 text-white border border-red-700/40 rounded-full flex items-center justify-center text-sm font-bold shadow-2xl z-10 hover:bg-red-600">❌</div>
+      <!-- DERECHA: Entrada de Texto -->
       <div title="Inserción de Texto" class="icon-button w-14 h-14 bg-zinc-950/95 text-white border-2 border-zinc-800 rounded-full flex items-center justify-center text-xl shadow-2xl">⌨️</div>
       
       <div></div>
-      <!-- ABAJO: Voz -->
+      <!-- ABAJO: Receptor de Voz -->
       <div title="Receptor de Voz" class="icon-button w-14 h-14 bg-zinc-950/95 text-white border-2 border-zinc-800 rounded-full flex items-center justify-center text-xl shadow-2xl">🎙️</div>
       <div></div>
     </div>
 
-    <!-- MODO COMPACTO: Logotipo amarillo oficial del Ecosistema Arturo -->
-    <div id="modo-compacto" class="w-[240px] h-[240px] items-center justify-center bg-transparent" style="display: none;">
-      <div onclick="mutarEstado('abrir')" title="Ecosistema Arturo" class="icon-button w-16 h-16 bg-amber-500 text-black border-4 border-zinc-950 rounded-full flex items-center justify-center text-2xl font-extrabold shadow-2xl shadow-amber-500/40 animate-pulse">A</div>
+    <!-- ESTADO 2: EL LOGOTIPO CIENTÍFICO OFICIAL (Acrílico, Dorado y Pulsante) -->
+    <div id="modo-compacto" class="w-[240px] h-[240px] flex items-center justify-center bg-transparent" style="display: none;">
+      <div onclick="mutarEstado('abrir')" title="Ecosistema Arturo" class="icon-button w-24 h-24 bg-zinc-950/80 border-2 border-amber-500/30 rounded-full flex items-center justify-center shadow-2xl shadow-amber-500/20 overflow-hidden p-2 backdrop-blur-md animate-pulse">
+        <img src="/logo.png" class="w-full h-full object-contain pointer-events-none" />
+      </div>
     </div>
 
   </body>
   </html>`;
   res.send(htmlGridPuro);
+});
+
+// SERVIR EL ARCHIVO DEL LOGO DE FORMA LOCAL DIRECTO DESDE TU CARPETA
+app.get('/logo.png', (req, res) => {
+  res.sendFile(path.resolve('logo.png'));
 });
 
 app.post('/api/chat', async (req, res) => {
@@ -87,12 +94,12 @@ app.post('/api/chat', async (req, res) => {
       exec('start roblox://');
       return res.json({ reply: `[${config.nombreIA}] Abriendo Roblox.` });
     }
-    res.json({ reply: `[${config.nombreIA}] Sistema activo.` });
+    res.json({ reply: `[${config.nombreIA}] Canales estables.` });
   } catch (err) {
-    res.json({ reply: `[${config.nombreIA}] Capa mutadora activa.` });
+    res.json({ reply: `[${config.nombreIA}] Capa mutadora local.` });
   }
 });
 
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[SISTEMA - CONFIGURACIÓN NATIVA ORBITAL FIJADA]');
+  console.log('\n[ECOSISTEMA - MOTOR GRÁFICO CON LOGO CIENTÍFICO INTEGRADO]');
 });
