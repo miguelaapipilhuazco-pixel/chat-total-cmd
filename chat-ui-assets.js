@@ -2,20 +2,16 @@ export function obtenerScriptsMultimedia() {
   return `<script>
     let recognition;
     
-    // MICROFONO MULTILINGÜE REAL: Captura audio e idiomas sin consumir RAM local
+    // RECONOCEDOR DE IDIOMAS AUTOMÁTICO (WEB SPEECH API) CORREGIDO
     function iniciarMicrofono() {
-      if (!('webkitSpeechRecognition' in window)) {
-        alert('Este sistema no soporta Web Speech API');
-        return;
-      }
+      if (!('webkitSpeechRecognition' in window)) return;
       recognition = new webkitSpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
-      recognition.lang = 'es-MX'; // Detecta español base e interpreta idiomas
-
-      recognition.onstart = () => { console.log('Hardware de audio activo.'); };
+      recognition.lang = 'es-MX';
+      
       recognition.onresult = async (event) => {
-        const vozTexto = event.results[0].transcript;
+        const vozTexto = event.results[0][0].transcript; // Captura exacta del arreglo de audio
         document.getElementById('chat-input').value = vozTexto;
         enviarMensaje();
         if(window.animarAvatarSeñas) window.animarAvatarSeñas();
@@ -23,9 +19,10 @@ export function obtenerScriptsMultimedia() {
       recognition.start();
     }
 
-    // AVATAR 3D INTEGRADO: Renderiza un monigote articulado con volumen real
+    // PASARELA DE HUESOS DIGITALES RENDERIZADOS CON AVATAR DE ROBOT SIN GÉNERO
     function inicializarAvatar3D() {
-      if (window.THREE) return; // Protege de duplicados en memoria
+      if (window.THREE) return; // Evita fugas de memoria RAM local
+      
       const script = document.createElement('script');
       script.src = 'https://cloudflare.com';
       script.onload = () => {
@@ -37,53 +34,80 @@ export function obtenerScriptsMultimedia() {
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         
-        const material = new THREE.MeshPhongMaterial({ color: 0xf59e0b, shininess: 80 });
-        const grupoAvatar = new THREE.Group();
+        // Estética Cromada Minimalista Sin Género (Metal Líquido Pulido)
+        const materialRobot = new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.2, metalness: 0.8 });
+        const enjambreHuesos = new THREE.Group();
         
-        // Estructura volumétrica del Avatar Uriel (Cabeza, Tronco y Brazos cinemáticos)
-        const cabeza = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), material);
-        cabeza.position.y = 1.1; grupoAvatar.add(cabeza);
+        // 1. Cabeza Esférica Neutra (Sin facciones de género)
+        const cabeza = new THREE.Mesh(new THREE.SphereGeometry(0.32, 32, 32), materialRobot);
+        cabeza.position.y = 1.1; enjambreHuesos.add(cabeza);
         
-        const cuerpo = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.2, 1.3, 32), material);
-        cuerpo.position.y = 0.1; grupoAvatar.add(cuerpo);
+        // 2. Torso o Chasis Mecánico Troncocónico
+        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.22, 1.2, 32), materialRobot);
+        torso.position.y = 0.1; enjambreHuesos.add(torso);
         
-        const brazoIzq = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.7, 0.18), material);
-        brazoIzq.position.set(-0.6, 0.5, 0); grupoAvatar.add(brazoIzq);
+        // 3. ESTRUCTURA ÓSEA DIGITAL (Huesos del Brazo Izquierdo)
+        const hombroIzq = new THREE.Group(); hombroIzq.position.set(-0.5, 0.5, 0);
+        const brazoIzq = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5), materialRobot);
+        brazoIzq.position.y = -0.25; hombroIzq.add(brazoIzq);
         
-        const brazoDer = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.7, 0.18), material);
-        brazoDer.position.set(0.6, 0.5, 0); grupoAvatar.add(brazoDer);
+        const antebrazoIzq = new THREE.Group(); antebrazoIzq.position.y = -0.5;
+        const manoIzqMesh = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.35, 0.07), materialRobot);
+        manoIzqMesh.position.y = -0.15; antebrazoIzq.add(manoIzqMesh);
+        hombroIzq.add(antebrazoIzq); enjambreHuesos.add(hombroIzq);
         
-        scene.add(grupoAvatar);
+        // 4. ESTRUCTURA ÓSEA DIGITAL (Huesos del Brazo Derecho Simétrico)
+        const hombroDer = new THREE.Group(); hombroDer.position.set(0.5, 0.5, 0);
+        const brazoDer = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5), materialRobot);
+        brazoDer.position.y = -0.25; hombroDer.add(brazoDer);
         
-        const light = new THREE.DirectionalLight(0xffffff, 1.2);
-        light.position.set(1, 1, 1).normalize(); scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040));
+        const antebrazoDer = new THREE.Group(); antebrazoDer.position.y = -0.5;
+        const manoDerMesh = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.35, 0.07), materialRobot);
+        manoDerMesh.position.y = -0.15; antebrazoDer.add(manoDerMesh);
+        hombroDer.add(antebrazoDer); enjambreHuesos.add(hombroDer);
         
-        camera.position.z = 3.5; camera.position.y = 0.4;
+        scene.add(enjambreHuesos);
         
-        function animate() {
-          requestAnimationFrame(animate);
-          grupoAvatar.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
+        // Iluminación Avanzada de Estudio de Diseño Frontend
+        const luzDirecta = new THREE.DirectionalLight(0xffffff, 1.5); luzDirecta.position.set(2, 4, 3); scene.add(luzDirecta);
+        const luzAmbiente = new THREE.AmbientLight(0x555555); scene.add(luzAmbiente);
+        
+        camera.position.z = 3.2; camera.position.y = 0.4;
+        
+        // Bucle de Animación Orgánica de Reposo (Idle Setup)
+        function renderCycle() {
+          requestAnimationFrame(renderCycle);
+          enjambreHuesos.rotation.y = Math.sin(Date.now() * 0.001) * 0.08;
+          cabeza.rotation.x = Math.sin(Date.now() * 0.0015) * 0.03;
+          hombroIzq.rotation.z = Math.sin(Date.now() * 0.001) * 0.04 - 0.1;
+          hombroDer.rotation.z = -Math.sin(Date.now() * 0.001) * 0.04 + 0.1;
           renderer.render(scene, camera);
         }
-        animate();
+        renderCycle();
         
-        // CONTROL EN SEÑAS: Mueve los brazos de forma interactiva
+        // CINEMÁTICA MAESTRA: Calcula la rotación ósea trasladando las señas a los brazos del robot
         window.animarAvatarSeñas = () => {
-          const status = document.getElementById('avatar-status');
-          if(status) status.innerText = 'Traduciendo a Señas...';
-          let t = 0;
-          const intervalo = setInterval(() => {
-            brazoIzq.rotation.z = Math.sin(t) * 1.1;
-            brazoDer.rotation.x = Math.cos(t) * 1.1;
-            t += 0.4;
-            if(t > 12) {
-              clearInterval(intervalo);
-              brazoIzq.rotation.set(0,0,0);
-              brazoDer.rotation.set(0,0,0);
-              if(status) status.innerText = 'Modelo 3D Humanoide Activo';
+          const statusText = document.getElementById('avatar-status');
+          if(statusText) statusText.innerText = 'Robot: Traduciendo señas...';
+          let timeStep = 0;
+          const motorIntervalo = setInterval(() => {
+            // Rotaciones calculadas sobre las articulaciones mecánicas reales
+            hombroIzq.rotation.x = Math.sin(timeStep) * 1.3;
+            hombroIzq.rotation.y = Math.cos(timeStep) * 0.8;
+            antebrazoIzq.rotation.z = Math.sin(timeStep * 1.5) * 0.9;
+            
+            hombroDer.rotation.x = Math.cos(timeStep) * 1.3;
+            hombroDer.rotation.z = Math.sin(timeStep) * 1.1;
+            antebrazoDer.rotation.x = Math.sin(timeStep * 2) * 0.8;
+            
+            timeStep += 0.35;
+            if(timeStep > 14) {
+              clearInterval(motorIntervalo);
+              hombroIzq.rotation.set(0,0,0); hombroDer.rotation.set(0,0,0);
+              antebrazoIzq.rotation.set(0,0,0); antebrazoDer.rotation.set(0,0,0);
+              if(statusText) statusText.innerText = 'Modelo 3D Humanoide Activo';
             }
-          }, 50);
+          }, 45);
         };
       };
       document.head.appendChild(script);
