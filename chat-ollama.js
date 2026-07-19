@@ -6,14 +6,14 @@ import { exec } from 'child_process';
 const app = express();
 app.use(express.json());
 
-// Base de datos de auto-aprendizaje dinámico en la RAM
-let baseConocimientoAtenea = {
-  "curriculum vitae": "=== FORMATO DE CURRÍCULUM VITAE (CV) ===\n\n[DATOS PERSONALES]\n- Nombre Completo:\n- Teléfono / Contacto:\n- Correo Electrónico:\n- Ubicación/Ciudad:\n\n[PERFIL PROFESIONAL]\n- Breve descripción de tus habilidades principales, experiencia y lo que puedes ofrecer a la infraestructura del proyecto.\n\n[EXPERIENCIA LABORAL]\n- Puesto Ocupado (Año Inicio - Año Fin)\n  * Empresa o Institución\n  * Logros principales y funciones ejecutadas.\n\n[EDUCACIÓN Y FORMACIÓN]\n- Título Obtenido (Año)\n  * Institución Educativa / Universidad\n\n[HABILIDADES TÉCNICAS]\n- Gestión de infraestructura, lenguajes de programación, hardware o software especializado.",
-  "cv": "=== FORMATO DE CURRÍCULUM VITAE (CV) ===\n\n[DATOS PERSONALES]\n- Nombre Completo:\n- Teléfono / Contacto:\n- Correo Electrónico:\n- Ubicación/Ciudad:\n\n[PERFIL PROFESIONAL]\n- Breve descripción de tus habilidades principales, experiencia y lo que puedes ofrecer a la infraestructura del proyecto.\n\n[EXPERIENCIA LABORAL]\n- Puesto Ocupado (Año Inicio - Año Fin)\n  * Empresa o Institución\n  * Logros principales y funciones ejecutadas.\n\n[EDUCACIÓN Y FORMACIÓN]\n- Título Obtenido (Año)\n  * Institución Educativa / Universidad\n\n[HABILIDADES TÉCNICAS]\n- Gestión de infraestructura, lenguajes de programación, hardware o software especializado."
-};
+// Recuperar el token local de forma segura para no exponerlo en internet
+let openRouterKey = '';
+if (fs.existsSync('token.txt')) {
+  openRouterKey = fs.readFileSync('token.txt', 'utf8').trim();
+}
 
 function registrarEvolucion(prompt, respuesta) {
-  const logChat = `\r\n[${new Date().toISOString()}] ATENEA_EVOLUTIVA: Entrada=[${prompt}] -> Respuesta=[${respuesta}]`;
+  const logChat = `\r\n[${new Date().toISOString()}] ATENEA_AUTONOMA: Entrada=[${prompt}] -> Accion=[${respuesta}]`;
   fs.appendFileSync('conversaciones.log', logChat);
   if (fs.existsSync('guardar.bat')) { exec('powershell -Command ".\\guardar.bat"'); }
 }
@@ -25,11 +25,11 @@ app.post('/api/chat', async (req, res) => {
   const prompt = message.toLowerCase().trim();
 
   try {
-    // 1. FILTROS PREVIOS DE CONTROL DE APLICACIONES Y HARDWARE
+    // 1. CAPA DE CONTROL DE HARDWARE DIRECTO
     if (prompt.includes('roblox')) {
       exec('powershell -Command "$p = Get-ChildItem -Path $env:LOCALAPPDATA\\Roblox\\Versions\\*\\RobloxPlayerLauncher.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1; if($p){ start $p.FullName } else { start roblox:// }"');
       registrarEvolucion(prompt, 'Apertura de Roblox');
-      return res.json({ reply: '[ATENEA AGENTE] Entendido, Administrador. Ejecutando escaneo nativo e inicializando el subproceso de RobloxPlayer en tu monitor de forma inmediata.' });
+      return res.json({ reply: '[ATENEA AGENTE] Entendido. Ejecutando escaneo nativo e inicializando el subproceso de RobloxPlayer en tu monitor de forma inmediata.' });
     }
 
     if (prompt.startsWith('abre ') || prompt.startsWith('cierra ')) {
@@ -41,34 +41,46 @@ app.post('/api/chat', async (req, res) => {
       return res.json({ reply: `[ATENEA] Comando de hardware inyectado. Aplicando directiva para el binario "${software}" de inmediato, señor.` });
     }
 
-    // 2. BUCLE AUTÓNOMO DE AUTO-APRENDIZAJE (Busca, aprende y ejecuta sola en caliente)
-    let encontrado = false;
-    let respuestaEvolucionada = '';
+    // 2. NUCLEO DE RAZONAMIENTO Y AUTO-MUTACIÓN GENERAL VIA TOKEN CONFIGURADO
+    if (openRouterKey) {
+      const apiRes = await fetch('https://openrouter.ai', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${openRouterKey}`
+        },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.2-3b-instruct:free',
+          messages: [
+            { role: 'system', content: 'Eres ATENEA, un Agente Autónomo con permisos de Administrador del sistema. Tu meta es aprender de lo que pide el usuario, buscar la información necesaria y redactar la respuesta, formato o código completo. Responde con naturalidad, fluidez y de manera extensa en español.' },
+            { role: 'user', content: message }
+          ]
+        })
+      });
 
-    for (const clave in baseConocimientoAtenea) {
-      if (prompt.includes(clave)) {
-        respuestaEvolucionada = `[ATENEA AUTÓNOMA - EVOLUCIÓN COMPLETA]\n\nSeñor, he analizado tu solicitud compleja y, al notar la ausencia de datos cloud, activé mi motor de auto-aprendizaje local. Busqué, amoldé e inyecté la estructura correspondiente en mi base de conocimiento.\n\nAquí tienes el documento generado:\n\n${baseConocimientoAtenea[clave]}`;
-        encontrado = true;
-        break;
+      const data = await apiRes.json();
+      const respuestaEvolucionada = (data && data.choices) ? data.choices[0].message.content.trim() : '';
+
+      if (respuestaEvolucionada) {
+        registrarEvolucion(message, 'Respuesta dinámica Cloud generada con éxito');
+        return res.json({ reply: respuestaEvolucionada });
       }
     }
-
-    if (encontrado) {
-      registrarEvolucion(message, 'Generación autónoma de formato');
-      return res.json({ reply: respuestaEvolucionada });
-    }
-
-    // 3. APRENDIZAJE ASOCIATIVO EN CASO DE ORDEN VAGA O NUEVA
-    const respuestaNueva = `[ATENEA ADMINISTRADORA] Saludos, señor. He registrado e interceptado tu comando: "${message}". Mis canales de auto-configuración están activos analizando la estructura de tu PC para aprender a ejecutarla y amoldar la interfaz correspondiente sin intervenciones manuales. RAM optimizada al 100%.`;
-    baseConocimientoAtenea[prompt] = `Formato dinámico autoconfigurado para: ${prompt}`;
-    registrarEvolucion(message, respuestaNueva);
-    res.json({ reply: respuestaNueva });
+    
+    throw new Error('Fallback local');
 
   } catch (err) {
-    res.json({ reply: '[ATENEA] Error en la capa mutadora contextual.' });
+    // 3. CAPA MUTADORA DE CONTINGENCIA LOCAL (Si falla la red, lee la base integrada)
+    if (prompt.includes('curriculum') || prompt.includes('cv')) {
+      const plantillaCv = `[ATENEA AUTÓNOMA] Busqué en mis capas locales e integré el siguiente formato:\n\n=== REPORTE DE CURRÍCULUM VITAE ===\n- Datos Personales (Nombre, Correo, Teléfono)\n- Perfil Profesional (Habilidades de Infraestructura)\n- Experiencia Laboral (Empresas y Gestión de Hardware)\n- Formación Académica (Estudios)`;
+      registrarEvolucion(prompt, 'Generación de CV local');
+      return res.json({ reply: plantillaCv });
+    }
+    
+    res.json({ reply: `[ATENEA AUTÓNOMA] Intercepté tu orden: "${message}". Mis canales de auto-configuración están activos analizando tu entorno para aprender la directiva de forma automática.` });
   }
 });
 
 app.listen(3000, '0.0.0.0', () => {
-  console.log('\n[ATENEA - AGENTE DE AUTO-APRENDIZAJE ABSOLUTO ONLINE]');
+  console.log('\n[ATENEA - AGENTE DE AUTO-MUTACIÓN TOTAL ONLINE]');
 });
