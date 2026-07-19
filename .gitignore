@@ -1,3 +1,3 @@
-.env
-node_modules/
-guardar.sh
+node_modules/ 
+.cache/ 
+token.txt
