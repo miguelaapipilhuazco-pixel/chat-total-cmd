@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { exec } from 'child_process';
-import { GoogleGenAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { obtenerInterfaz } from './chat-ui.js';
 import { ejecutarModulo } from './chat-hardware.js';
 
@@ -15,9 +15,9 @@ if (fs.existsSync('config.json')) {
   try { config = JSON.parse(fs.readFileSync('config.json', 'utf8')); } catch(e){}
 }
 
-// INYECCIÓN DE LLAVE RESIDENTE: Conserva aquí tu clave real AIzaSy... de desarrollo para los 5 Niveles
+// INYECCIÓN DE LLAVE RESIDENTE: Pon aquí tu clave de API real AIzaSy... de desarrollo de Google
 const CLAVE_NUCLEO_URIELES = "AIzaSy_TU_TOKEN_REAL_AQUI_SIN_ESPACIOS";
-const ai = new GoogleGenAI({ apiKey: CLAVE_NUCLEO_URIELES });
+const ai = new GoogleGenerativeAI(CLAVE_NUCLEO_URIELES);
 
 function obtenerIPLocal() {
   const interfaces = os.networkInterfaces();
@@ -48,7 +48,7 @@ app.post('/api/funcion', (req, res) => {
   res.json({ success: true });
 });
 
-// ARQUITECTURA MULTINIVEL DE AUTO-MUTACIÓN Y RAZONAMIENTO COGNITIVO REPARADA
+// MOTOR DE INFERENCIA MULTINIVEL DE AUTO-MUTACIÓN DE CÓDIGO FUENTE REPARADO
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   const prompt = message.toLowerCase().trim();
@@ -71,7 +71,7 @@ app.post('/api/chat', async (req, res) => {
       const respuestaTexto = apiRes.response.text();
       
       const match = respuestaTexto.match(/```javascript([\s\S]*?)```/) || respuestaTexto.match(/```js([\s\S]*?)```/) || respuestaTexto.match(/```html([\s\S]*?)```/);
-      const codigoLimpio = match ? match.trim() : respuestaTexto.trim();
+      const codigoLimpio = match ? match[1].trim() : respuestaTexto.trim();
 
       if (codigoLimpio) {
         let archivoDestino = prompt.includes('interfaz') || prompt.includes('diseño') ? 'chat-ui.js' : 'chat.js';
@@ -117,5 +117,6 @@ function arrancarServidorTolerante() {
   });
 }
 arrancarServidorTolerante();
+
 
 
