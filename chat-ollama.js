@@ -17,9 +17,9 @@ function actualizarInfraestructura() {
   exec('netsh wlan set hostednetwork mode=allow ssid="IA Semana de la Ingenieria" > nul 2>&1');
   exec('netsh wlan start hostednetwork > nul 2>&1');
 }
-// INTERFAZ PROFESIONAL CON MOTOR IONIC FRAMEWORK ADAPTATIVO
+// INTERFAZ MULTIMODAL CON RECONOCIMIENTO DE VOZ INCORPORADO
 app.get('/', (req, res) => {
-  res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>IA Multi-OS</title><script type="module" src="https://jsdelivr.net"></script><script nomodule src="https://jsdelivr.net"></script><link rel=stylesheet href="https://jsdelivr.net"/><style>body{background:#000;--ion-background-color:#000;color:#fff;} #ia-fab{position:fixed;bottom:15px;right:15px;z-index:9999;} ion-fab-button{--background:#d4af37;--color:#000;box-shadow:0 4px 12px rgba(0,0,0,0.5);}</style></head><body><ion-app><ion-content><div id="ia-fab"><ion-fab><ion-fab-button><ion-icon name="hardware-chip-outline">⚛️</ion-icon></ion-fab-button><ion-fab-list side="top"><ion-fab-button onclick="setModo('texto')" title="Texto">⌨️</ion-fab-button><ion-fab-button onclick="setModo('microfono')" title="Microfono">🎙️</ion-fab-button><ion-fab-button onclick="setModo('senas')" title="Señas">🖐️</ion-fab-button></ion-fab-list></ion-fab></div></ion-content></ion-app><script>function setModo(m){fetch('/api/modo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({modo:m})});}</script></body></html>`);
+  res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>IA de Voz</title><script type="module" src="https://jsdelivr.net"></script><script nomodule src="https://jsdelivr.net"></script><link rel="stylesheet" href="https://jsdelivr.net"/><style>body{background:#000;--ion-background-color:#000;color:#fff;} #ia-fab{position:fixed;bottom:15px;right:15px;z-index:9999;} ion-fab-button{--background:#d4af37;--color:#000;box-shadow:0 4px 12px rgba(0,0,0,0.5);} #chat-box{padding:20px;text-align:center;margin-top:40vh;font-size:18px;color:#d4af37;font-weight:bold;}</style></head><body><ion-app><ion-content><div id="chat-box">Presiona el micrófono y habla...</div><div id="ia-fab"><ion-fab><ion-fab-button><ion-icon name="hardware-chip-outline">⚛️</ion-icon></ion-fab-button><ion-fab-list side="top"><button onclick="activarMicrofono()" style="background:none;border:none;font-size:24px;margin:8px;cursor:pointer;" title="Hablar">🎙️</button><button onclick="alert('Modo Señas Activo')" style="background:none;border:none;font-size:24px;margin:8px;cursor:pointer;" title="Señas">🖐️</button></ion-fab-list></ion-fab></div></ion-content></ion-app><script>const box = document.getElementById('chat-box'); function activarMicrofono(){ const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; if(!Recognition){ box.innerText='Tu navegador no soporta entrada de voz.'; return; } const rec = new Recognition(); rec.lang='es-MX'; box.innerText='🎙️ Escuchando tu voz...'; rec.start(); rec.onresult=(e)=>{ const texto=e.results[0][0].transcript; box.innerText='Procesando en la nube: '+texto; fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:texto,rol:'administrador'})}).then(r=>r.json()).then(d=>box.innerText=d.reply); }; rec.onerror=()=>box.innerText='Error al capturar audio.'; }</script></body></html>`);
 });
 app.post('/api/chat', async (req, res) => {
   try {
@@ -35,7 +35,7 @@ app.post('/api/chat', async (req, res) => {
 });
 function iniciarServidor(puerto) {
   const server = app.listen(puerto, '0.0.0.0', () => {
-    console.log(`\n[AGENTE MULTI-IA CON ELEMENTOS ADAPTATIVOS IONIC EN EL PUERTO: ${puerto}]`);
+    console.log(`\n[AGENTE IA MULTIMODAL CON INTERFAZ DE VOZ EN EL PUERTO: ${puerto}]`);
     setInterval(actualizarInfraestructura, 300000);
   });
   server.on('error', (err) => {
