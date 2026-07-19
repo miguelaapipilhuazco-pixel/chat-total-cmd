@@ -8,9 +8,9 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   
   let iconBraille = '&#x2817;&#x2803;'; 
   
-  // VECTOR ANATÓMICO CORREGIDO: Mano extendida real de 5 dedos estilizados (Sin deformaciones centrales)
+  // VECTOR MAESTRO DE 5 DEDOS COMPLETO (ANATOMÍA PURA)
   let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <path d="M12 2a1 1 0 0 0-1 1v6.5a.5.5 0 0 1-1 0V3.5a1 1 0 0 0-2 0V9a.5.5 0 0 1-1 0V5a1 1 0 0 0-2 0v6.5a.5.5 0 0 1-1 0V8.5a1 1 0 0 0-2 0v5a7 7 0 0 0 7 7h2.5a6.5 6.5 0 0 0 6.5-6.5V7.5a1 1 0 0 0-2 0v3a.5.5 0 0 1-1 0V5a1 1 0 0 0-2 0v5.5a.5.5 0 0 1-1 0V3a1 1 0 0 0-1-1z"/>
+    <path d="M12 2a1 1 0 0 0-1 1v6.5a.5.5 0 0 1-1 0V3.5a1 1 0 0 0-2 0V9a.5.5 0 0 1-1 0V4.5a1 1 0 0 0-2 0v6.5a.5.5 0 0 1-1 0V7a1 1 0 0 0-2 0v5.5A7.5 7.5 0 0 0 10.5 20h3A6.5 6.5 0 0 0 20 13.5V7.5a1 1 0 0 0-2 0v3.5a.5.5 0 0 1-1 0V3a1 1 0 0 0-1-1z"/>
   </svg>`; 
   
   let iconTexto = 'Tᴛ'; 
