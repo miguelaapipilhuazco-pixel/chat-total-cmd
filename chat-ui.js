@@ -2,18 +2,25 @@ import path from 'path';
 
 export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estiloBorder, radioBordes) {
   let radioBordesDinamico = '50%';
-  let colorOscuroNativo = 'rgba(32, 32, 32, 0.85)'; // Cristal oscuro esmerilado Windows 11
+  let colorOscuroNativo = 'rgba(32, 32, 32, 0.85)'; // Cristal oscuro esmerilado de Windows 11
   let blurNativo = 'backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);';
   let bordeNativo = '1px solid rgba(255, 255, 255, 0.12)';
   
-  // VECTOR MAESTRO DE MANOS INTEGRADO: Trazos lineales limpios en blanco translúcido
+  // VECTOR MAESTRO PURIFICADO DE ICONOS PROPIOS
   let iconBraille = '&#x2817;&#x2803;'; 
-  let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M10 14H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
-    <path d="M22 14h-8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
+  
+  // Icono 2: Silueta de una Mano Abierta Minimalista (Lenguaje de Señas)
+  let iconSeñas = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+    <path d="M12 2a1 1 0 0 1 1 1v7.17l.83-.83a1 1 0 0 1 1.41 1.41l-2.12 2.12a2 2 0 0 1-2.83 0L8.17 11.75a1 1 0 0 1 1.41-1.41l.83.83V3a1 1 0 0 1 1-1zm6 8a1 1 0 0 1 1 1v3.5a5.5 5.5 0 0 1-11 0V11a1 1 0 1 1 2 0v3.5a3.5 3.5 0 0 0 7 0V11a1 1 0 0 1 1-1z"/>
   </svg>`; 
+  
   let iconTexto = 'Tᴛ'; 
-  let iconVoz = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>`;
+  
+  // Icono 4: Micrófono Relleno Sólido (Receptor de Voz)
+  let iconVoz = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+    <rect x="9" y="2" width="6" height="12" rx="3" ry="3"/>
+    <path d="M19 10a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 0 0 2 0v-4.08A7 7 0 0 0 19 10z"/>
+  </svg>`;
 
   if (userAgent.includes('android') || userAgent.includes('watch')) {
     radioBordesDinamico = '50%'; colorOscuroNativo = 'rgba(10, 10, 10, 0.98)'; blurNativo = ''; bordeNativo = '1px solid rgba(255, 255, 255, 0.05)';
@@ -52,7 +59,8 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
         transition: transform 0.2s ease, filter 0.2s, color 0.2s; 
         cursor: pointer; display: flex; items: center; justify-content: center; 
         border: none !important; background: transparent !important; box-shadow: none !important;
-        width: 36px; height: 36px; color: rgba(255, 255, 255, 0.7) !important; 
+        width: 36px; height: 36px; 
+        fill: rgba(255, 255, 255, 0.7) !important; color: rgba(255, 255, 255, 0.7) !important; 
       }
       .icon-btn:hover { transform: scale(1.15); filter: brightness(1.4) !important; }
       .icon-btn:active { transform: scale(0.92); }
@@ -69,7 +77,8 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
         const c = document.getElementById('modo-com');
         if(m === 'cerrar'){
           e.style.setProperty('display', 'none', 'important');
-          c.style.setProperty('display', 'flex', 'important');
+          c.style.setProperty('important', 'flex', 'important');
+          c.style.display = 'flex';
         } else {
           e.style.setProperty('display', 'grid', 'important');
           c.style.setProperty('display', 'none', 'important');
@@ -83,7 +92,7 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   <body>
     <div id="modo-ext" class="capsula-cruz" style="display: grid;">
       <div></div>
-      <div onclick="dispararFuncion('braille')" title="Braille" class="icon-btn" style="color: rgba(255, 255, 255, 0.7); font-size: 26px; font-weight: bold;">${iconBraille}</div>
+      <div onclick="dispararFuncion('braille')" title="Braille" class="icon-btn" style="font-size: 26px; font-weight: bold;">${iconBraille}</div>
       <div></div>
       <div onclick="dispararFuncion('señas')" title="Lenguaje de Señas" class="icon-btn">${iconSeñas}</div>
       <div onclick="mutar('cerrar')" class="punto-ico icon-btn">•</div>
@@ -101,4 +110,3 @@ export function obtenerInterfaz(userAgent, config, colorFondo, efectoBlur, estil
   </body>
   </html>`;
 }
-
