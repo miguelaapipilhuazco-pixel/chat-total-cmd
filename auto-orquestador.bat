@@ -1,0 +1,3 @@
+@echo off
+echo [SISTEMA] Iniciando observador automatico local...
+npm run dev

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<manifest xmlns:android="http://android.com" package="com.ecosistema.arturo"> 
+    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="Arturo IA" android:theme="@style/Theme.AppCompat.NoActionBar"> 
+        <service android:name=".QuickTileService" android:label="Arturo IA" android:icon="@drawable/logo_tile" android:permission="android.permission.BIND_QUICK_SETTINGS_TILE" android:exported="true"> 
+            <intent-filter> 
+                <action android:name="android.service.quicksettings.action.QS_TILE" /> 
+            </intent-filter> 
+        </service> 
+    </application> 
+</manifest> 
