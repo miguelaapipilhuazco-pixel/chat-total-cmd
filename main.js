@@ -8,6 +8,6 @@ function createOverlayWindow () {
   });
   session.defaultSession.setPermissionCheckHandler(() => true);
   session.defaultSession.setPermissionRequestHandler((wb, p, cb) => cb(true));
-  win.loadURL('http://localhost:3000');
+  win.loadURL('http://localhost:7860');
 }
 app.whenReady().then(createOverlayWindow);

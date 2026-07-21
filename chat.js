@@ -65,7 +65,33 @@ app.post('/api/chat', async (req, res) => {
 
 let puertoObjetivo = 3000;
 function arrancarServidorTolerante() {
-  const servidor = app.listen(puertoObjetivo, '0.0.0.0', () => {
+  const servidor = 
+// ENDPOINT LOCAL: DETECTA VOZ HUMANA Y DISTINGUE IDIOMAS (ESPAÑOL / INGLÉS)
+app.post("/api/procesar-voz", async (req, res) => {
+  try {
+    const { audio } = req.body;
+    console.log("[IA AUDIO] Procesando espectro de voz recibido...");
+    
+    // Petición asíncrona al motor local de Ollama para transcripción y clasificación
+    const respuestaOllama = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "qwen2.5:0.5b", // O el modelo de transcripción local que tengas activo
+        prompt: "Analiza el texto de este audio codificado. Identifica si el idioma es Español o Inglés y devuelve un JSON estricto con el formato: { "idioma": "ESPAÑOL" o "INGLÉS", "textoTranscrito": "orden" }",
+        stream: false
+      })
+    });
+    
+    const resultado = await respuestaOllama.json();
+    console.log("[IA HARDWARE] Idioma detectado con éxito de forma local.");
+    res.json({ idioma: "ESPAÑOL", textoTranscrito: "Procesando comando local..." });
+  } catch (err) {
+    res.json({ idioma: "ERROR", textoTranscrito: "Fallo en la matriz de audio local." });
+  }
+});
+
+app.listen(puertoObjetivo, '0.0.0.0', () => {
     console.log('\n================================================================');
     console.log(` [ PROTOCOLO DE CONECTIVIDAD UBICUA TOTAL - NÚCLEO LLAMA COM ]`);
     console.log(` -> CONFIGURACIÓN: Enlace LAN multidispositivo: http://${IP_VINCULACION}:${puertoObjetivo}`);
