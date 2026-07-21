@@ -1,4 +1,4 @@
-@echo off
-git add .
-git commit -m "Actualizacion del orquestador universal Multi-IA"
-git push origin main
+@echo off 
+git add . 
+git commit -m "ia: Sincronizacion de desarrollo" 
+git push origin debug --force 
