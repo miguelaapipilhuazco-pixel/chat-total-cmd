@@ -78,7 +78,7 @@ app.post("/api/procesar-voz", async (req, res) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "qwen2.5:0.5b", // O el modelo de transcripción local que tengas activo
-        prompt: "Analiza el texto de este audio codificado. Identifica si el idioma es Español o Inglés y devuelve un JSON estricto con el formato: { "idioma": "ESPAÑOL" o "INGLÉS", "textoTranscrito": "orden" }",
+        prompt: "Analiza el texto de este audio codificado. Identifica si el idioma es Español o Inglés y devuelve un JSON estricto con el formato: { "idioma": "ESPAÑOL", "textoTranscrito": "orden" }",
         stream: false
       })
     });
